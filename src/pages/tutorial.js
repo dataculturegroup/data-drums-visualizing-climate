@@ -1,0 +1,18 @@
+import { tracks } from './tutorial-tracks.js';
+import { createEngine } from '../lib/engine.js';
+import { createHighway, GLOW_MS } from '../lib/highway.js';
+import { bindControls } from '../lib/controls.js';
+
+const engine = createEngine({ tracks, onTrackChange: () => {} });
+// Each big circle pulses the instant a dot reaches the target on its highway.
+const blobs = { you: document.querySelector('.blob-you'), me: document.querySelector('.blob-me') };
+const pulse = (lane) =>
+  blobs[lane].animate([{ transform: 'scale(1.08)' }, { transform: 'scale(1)' }], {
+    duration: GLOW_MS,
+    easing: 'ease-out',
+  });
+
+createHighway(document.getElementById('highway-you'), engine, { lanes: ['you'], colors: { you: 'green' }, onHit: pulse });
+createHighway(document.getElementById('highway-me'), engine, { lanes: ['me'], colors: { me: 'red' }, onHit: pulse });
+// → past the last step stops and returns to the home screen.
+bindControls(engine, tracks, { bpm: 110, onPastEnd: () => location.assign('../') });
