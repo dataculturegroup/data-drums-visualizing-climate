@@ -6,21 +6,22 @@
   <title>Data Drums @ Visualizing Climate</title>
   <!-- Load styles and fonts up front (render-blocking) so pages never flash unstyled. -->
   <style>html, body { background: #e1d1c9; }</style>
-  <link rel="preload" href="./src/fonts/NunitoSans-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./src/fonts/Teko-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./src/fonts/Montserrat-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="./src/styles/common.css" />
+  <script type="module" src="./src/pages/home.js"></script>
 </head>
 <body>
   <main class="stage home">
-    <img class="blob hero-logo" style="--x: 2; --y: 5; --d: 90" src="./images/data-drums-logo.png" alt="" />
     <div class="home-main">
+      <img class="hero-logo" src="./images/data-drums-logo.png" alt="" />
       <h1>Data Drums</h1>
       <nav>
-        <a href="./tutorial/">1. Warm up<small>learn to read the highway</small></a>
-        <a href="./current-emissions/">2. Current emissions<small>global CO₂ since 1880</small></a>
-        <a href="./solutions/">3. Solutions<small>coming in phase 2</small></a>
+        <a href="./tutorial/">Warm Up</a>
+        <a href="./current-emissions/">Current Emissions</a>
+        <a href="./solutions/">Potential Futures</a>
       </nav>
     </div>
-    <a class="logo" href="./" title="Data Drums home"><img src="./images/dcg-logo.png" alt="Data Culture Group logo" /></a>
   </main>
 </body>
 </html>

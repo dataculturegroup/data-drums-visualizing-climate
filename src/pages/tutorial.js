@@ -1,6 +1,7 @@
 import { tracks } from './tutorial-tracks.js';
 import { createEngine } from '../lib/engine.js';
 import { createHighway, GLOW_MS } from '../lib/highway.js';
+import { addRings } from '../lib/rings.js';
 import { bindControls } from '../lib/controls.js';
 
 const engine = createEngine({ tracks, onTrackChange: () => {} });
@@ -16,3 +17,6 @@ createHighway(document.getElementById('highway-you'), engine, { lanes: ['you'], 
 createHighway(document.getElementById('highway-me'), engine, { lanes: ['me'], colors: { me: 'red' }, onHit: pulse });
 // → past the last step stops and returns to the home screen.
 bindControls(engine, tracks, { bpm: 110, onPastEnd: () => location.assign('../') });
+
+// Spinning rings on the start screen only; they go away with it once playing starts.
+addRings(document.getElementById('overlay'));

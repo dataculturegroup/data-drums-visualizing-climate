@@ -5,13 +5,21 @@
    brand-color circles bleeding off the edges, heavy titles.
    Brand colors are never used with reduced opacity; use the neutral greys instead. */
 
-/* Nunito Sans (variable weight, latin subset; SIL OFL, see src/fonts/NunitoSans-OFL.txt).
-   Self-hosted so it works offline. Body uses 500–700, titles 800. */
+/* Fonts match the Data Culture Group site: Teko for big titles, Montserrat for everything
+   else. Both are variable weight, latin subset, SIL OFL (see src/fonts/*-OFL.txt), and
+   self-hosted so the pages work offline. */
 @font-face {
-  font-family: 'Nunito Sans';
-  src: url('../fonts/NunitoSans-latin-wght.woff2') format('woff2-variations'),
-       url('../fonts/NunitoSans-latin-wght.woff2') format('woff2');
-  font-weight: 200 1000;
+  font-family: 'Teko';
+  src: url('../fonts/Teko-latin-wght.woff2') format('woff2-variations'),
+       url('../fonts/Teko-latin-wght.woff2') format('woff2');
+  font-weight: 300 700;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-latin-wght.woff2') format('woff2-variations'),
+       url('../fonts/Montserrat-latin-wght.woff2') format('woff2');
+  font-weight: 100 900;
   font-display: block;
 }
 
@@ -37,8 +45,9 @@
   --faint: var(--grey-mid);
   --accent: var(--color-red);
 
-  --font: 'Nunito Sans', system-ui, sans-serif;
-  --title-weight: 800;
+  --font: 'Montserrat', system-ui, sans-serif;
+  --font-title: 'Teko', 'Arial Narrow', sans-serif;
+  --title-weight: 700;
 }
 
 /* Crossfade between pages instead of a hard cut (Chrome/Edge/Safari). */
@@ -115,7 +124,7 @@ a { color: inherit; }
 
 /* Highway panel */
 .track-info { display: flex; flex-direction: column; gap: 1cqh; }
-#track-year { font-size: 12cqh; font-weight: var(--title-weight); line-height: 1; }
+#track-year { font-family: var(--font-title); font-size: 12cqh; font-weight: var(--title-weight); line-height: 1; }
 #track-desc { font-size: 3cqh; font-weight: 700; max-width: 36cqh; }
 
 /* Highways run to the very bottom of the stage, so dots enter from the bottom edge. */
@@ -125,6 +134,7 @@ a { color: inherit; }
 
 
 /* Content panel */
+.panel h1, .panel h2 { font-family: var(--font-title); }
 .panel h1 { font-size: 12cqh; font-weight: var(--title-weight); line-height: 1.05; margin: 0 0 3cqh; }
 .panel h2 { font-size: 4cqh; font-weight: var(--title-weight); margin: 0 0 2cqh; }
 .panel p, .panel li { font-size: 3.2cqh; line-height: 1.4; }
@@ -150,48 +160,77 @@ a { color: inherit; }
   inset: 0;
   display: grid;
   place-items: center;
+  /* Shift the title up and left, clear of the spinning rings in the bottom-right corner;
+     long titles wrap onto two lines. */
+  padding: 0 40cqh 15cqh 0;
+  text-align: center;
+  line-height: 1;
   background: var(--bg);
-  font-size: 6cqh;
+  font-family: var(--font-title);
+  font-size: 24cqh;
   font-weight: var(--title-weight);
   cursor: pointer;
   z-index: 3;
 }
 .stage > .overlay[hidden] { display: none; }
 
-/* Home page: Data Drums logo as the big circle (left), title and page links on the right. */
-.home { grid-template-columns: 95cqh 1fr; align-items: center; }
-.hero-logo { background: none; }
-.home-main { grid-column: 2; padding-right: 8cqh; }
+/* Home page: Data Drums logo top-left, with the title and page links stacked under it. */
+.home { align-content: start; }
+.hero-logo { display: block; width: 34cqh; margin: 0 0 3cqh -1cqh; }
+/* Slowly rotating arc rings behind the home page (built in src/pages/home.js). */
+.rings { background: none; overflow: visible; animation: spin var(--secs) linear infinite; }
+.rings-reverse { animation-direction: reverse; }
+.overlay > .rings { z-index: -1; } /* under the overlay's title text */
+@keyframes spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .rings { animation: none; } }
+.home-main { padding: 4cqh 0 0 10cqh; }
 .home h1 {
+  font-family: var(--font-title);
   font-size: 11cqh;
   font-weight: var(--title-weight);
   line-height: 1;
-  margin: 0 0 4cqh;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 2.5cqh;
 }
-.home nav { display: grid; gap: 3cqh; }
+.home nav { display: grid; justify-items: start; gap: 2.5cqh; }
 .home nav a {
-  display: block;
-  padding: 2.5cqh 4cqh;
-  background: var(--color-white);
-  border: 0.6cqh solid var(--color-black);
-  border-radius: 4cqh;
-  text-decoration: none;
-  font-size: 5.5cqh;
-  font-weight: var(--title-weight);
+  font-size: 5cqh;
+  font-weight: 700;
+  text-decoration-thickness: 0.4cqh;
+  text-underline-offset: 0.18em;
 }
-.home nav a:hover, .home nav a:focus-visible { background: var(--color-red); color: var(--color-white); }
+.home nav a:hover, .home nav a:focus-visible { color: var(--color-red); }
 .home nav small { display: block; font-size: 2.6cqh; font-weight: 600; margin-top: 0.5cqh; }
 
 /* Solutions: three full-height sector highways side by side, each labeled at the top. */
-.stage.solutions { grid-template-columns: repeat(3, 1fr); }
-.sector-panel { padding-top: 3cqh; }
-.panel .sector-label { font-size: 6cqh; text-align: center; margin: 0; }
-.stage.solutions > .overlay { font-size: 24cqh; }
+.stage.solutions { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto 1fr; }
+/* Small all-caps heading over all three highways, on a full-width black band. */
+.solutions-title {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 1.6cqh 2cqh;
+  text-align: center;
+  line-height: 1;
+  text-box: trim-both cap alphabetic; /* trim to the capitals so the padding looks even */
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: 2.4cqh;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.sector-panel { padding-top: 1cqh; }
+.panel .sector-label { font-size: 7.5cqh; text-align: center; margin: 0; }
+.panel .sector-sub { font-size: 2.4cqh; font-weight: 400; line-height: 1.3; text-align: center; color: var(--muted); max-width: 52cqh; margin: 0.5cqh auto 0; }
 
-/* Pop-up tips beside a highway's dots, with a pointer toward the lane. */
+/* Pop-up tips centered under each highway, near the bottom of the screen. */
 .tip {
   position: absolute;
-  width: max-content; /* size to the text, not the space left beside the lane */
+  left: 50%;
+  bottom: 4cqh;
+  width: max-content; /* size to the text, not the highway width */
+  text-align: center;
   max-width: 28cqh;
   padding: 1.2cqh 1.6cqh;
   background: var(--color-white);
@@ -203,17 +242,6 @@ a { color: inherit; }
   pointer-events: none;
   z-index: 2;
 }
-.tip-right { left: calc(50% + 6cqh); }
-.tip-left { right: calc(50% + 6cqh); text-align: right; }
-.tip::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  margin-top: -1.2cqh;
-  border: 1.2cqh solid transparent;
-}
-.tip-right::before { right: 100%; border-right-color: var(--tip-color); }
-.tip-left::before { left: 100%; border-left-color: var(--tip-color); }
 .stage > .help { /* help sits directly on the stage here, not inside a panel */
   position: absolute;
   bottom: 1cqh;
@@ -235,10 +263,10 @@ a { color: inherit; }
 .highway-panel { padding-top: 3cqh; }
 .highway-panel .highway-wrap { margin-top: 0; }
 .cue-label { justify-content: center; align-items: center; }
-.stage.tutorial > .overlay { font-size: 24cqh; }
 
 
 .cue {
+  font-family: var(--font-title);
   font-size: 17.6cqh; /* 80% of the original 22cqh */
   font-weight: var(--title-weight);
   line-height: 1;

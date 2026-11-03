@@ -3,29 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Solutions</title>
+  <title>Potential Futures</title>
   <!-- Load styles and fonts up front (render-blocking) so pages never flash unstyled. -->
   <style>html, body { background: #e1d1c9; }</style>
-  <link rel="preload" href="../src/fonts/NunitoSans-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../src/fonts/Teko-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../src/fonts/Montserrat-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="../src/styles/common.css" />
   <script type="module" src="../src/pages/solutions.js"></script>
 </head>
 <body>
   <main class="stage solutions">
+    <p id="solutions-title" class="solutions-title"></p>
     <section class="panel sector-panel">
-      <h2 class="sector-label" style="color: var(--color-red)">Making things</h2>
-      <div class="highway-wrap"><canvas id="highway-making"></canvas></div>
-    </section>
-    <section class="panel sector-panel">
-      <h2 class="sector-label" style="color: var(--color-green)">Food and land</h2>
+      <h2 class="sector-label" style="color: var(--color-green)">Food and Land</h2>
+      <p class="sector-sub">farming, livestock, food waste, and the forests and wetlands we clear or protect</p>
       <div class="highway-wrap"><canvas id="highway-food"></canvas></div>
     </section>
     <section class="panel sector-panel">
-      <h2 class="sector-label" style="color: var(--color-darkbrown)">Getting around</h2>
+      <h2 class="sector-label" style="color: var(--color-darkbrown)">Getting Around</h2>
+      <p class="sector-sub">travel and how we heat, cool, and power our homes</p>
       <div class="highway-wrap"><canvas id="highway-moving"></canvas></div>
     </section>
-    <p class="help">Space start/stop · ←/→ step · ↑/↓ tempo · 1–2 jump</p>
-    <div id="overlay" class="overlay">Solutions</div>
+    <section class="panel sector-panel">
+      <h2 class="sector-label" style="color: var(--color-red)">Making Things</h2>
+      <p class="sector-sub">factories, steel, cement, chemicals, and fuels behind everything we buy and build</p>
+      <div class="highway-wrap"><canvas id="highway-making"></canvas></div>
+    </section>
+    <p class="help">Space start/stop · ←/→ step · ↑/↓ tempo · 1–7 jump</p>
+    <div id="overlay" class="overlay">Potential Futures</div>
     <a class="logo" href="../" title="Back to menu"><img src="../images/dcg-logo.png" alt="Data Culture Group logo (back to menu)" /></a>
   </main>
 </body>
