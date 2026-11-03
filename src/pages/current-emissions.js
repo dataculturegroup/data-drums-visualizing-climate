@@ -4,17 +4,19 @@ import { createEngine } from '../lib/engine.js';
 import { createHighway } from '../lib/highway.js';
 import { createChart } from '../lib/chart.js';
 import { addRings } from '../lib/rings.js';
-import { bindControls, renderTrackHeader } from '../lib/controls.js';
+import { bindControls } from '../lib/controls.js';
 
 const chart = createChart(document.getElementById('chart'), data, tracks.map((t) => t.year));
 
-const engine = createEngine({ tracks, onTrackChange });
+const highwayYear = document.getElementById('highway-year');
+const engine = createEngine({ tracks, onTrackChange, sounds: { thigh: 'clap' } });
 function onTrackChange() {
-  renderTrackHeader(engine, tracks);
-  chart.update(tracks[engine.state.current].year);
+  const { year, history: text } = tracks[engine.state.current];
+  chart.update(year, text);
+  highwayYear.textContent = year;
 }
 
-createHighway(document.getElementById('highway'), engine, { colors: { thigh: 'green' } });
+createHighway(document.getElementById('highway'), engine, { colors: { thigh: 'red' } });
 bindControls(engine, tracks, { bpm: 90 });
 onTrackChange();
 

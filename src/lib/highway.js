@@ -20,7 +20,8 @@ function loop(ms) {
 // opts.lanes: which of the engine's lanes this highway shows (default: all).
 // opts.colors: { lane: brand color name } for the notes and hit pulse (default: green).
 // opts.onHit(lane): called the frame a note reaches the target, to sync other animations.
-export function createHighway(canvas, engine, { lanes = engine.lanes, colors = {}, onHit } = {}) {
+// opts.targetColor: brand color name for the target outline (default: dark grey).
+export function createHighway(canvas, engine, { lanes = engine.lanes, colors = {}, onHit, targetColor } = {}) {
   const laneColor = (lane) => color(colors[lane] ?? 'green');
   const ctx = canvas.getContext('2d');
   let w = 0;
@@ -121,7 +122,7 @@ export function createHighway(canvas, engine, { lanes = engine.lanes, colors = {
         ctx.arc(cx, hitY, r * (1 + 0.8 * (1 - a)), 0, Math.PI * 2);
         ctx.stroke();
       }
-      ctx.strokeStyle = grey('dark');
+      ctx.strokeStyle = targetColor ? color(targetColor) : grey('dark');
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.arc(cx, hitY, r, 0, Math.PI * 2);

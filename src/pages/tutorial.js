@@ -4,7 +4,7 @@ import { createHighway, GLOW_MS } from '../lib/highway.js';
 import { addRings } from '../lib/rings.js';
 import { bindControls } from '../lib/controls.js';
 
-const engine = createEngine({ tracks, onTrackChange: () => {} });
+const engine = createEngine({ tracks, onTrackChange: () => {}, sounds: { me: 'clap', you: 'clap' } });
 // Each big circle pulses the instant a dot reaches the target on its highway.
 const blobs = { you: document.querySelector('.blob-you'), me: document.querySelector('.blob-me') };
 const pulse = (lane) =>
@@ -13,8 +13,8 @@ const pulse = (lane) =>
     easing: 'ease-out',
   });
 
-createHighway(document.getElementById('highway-you'), engine, { lanes: ['you'], colors: { you: 'green' }, onHit: pulse });
-createHighway(document.getElementById('highway-me'), engine, { lanes: ['me'], colors: { me: 'red' }, onHit: pulse });
+createHighway(document.getElementById('highway-you'), engine, { lanes: ['you'], colors: { you: 'red' }, onHit: pulse });
+createHighway(document.getElementById('highway-me'), engine, { lanes: ['me'], colors: { me: 'lightbrown' }, targetColor: 'lightbrown', onHit: pulse });
 // → past the last step stops and returns to the home screen.
 bindControls(engine, tracks, { bpm: 110, onPastEnd: () => location.assign('../') });
 

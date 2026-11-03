@@ -28,6 +28,7 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
 
   const triggers = Object.fromEntries(Object.entries(sounds).map(([lane, name]) => [lane, voices[name]()]));
   const hasSound = Object.keys(triggers).length > 0;
+  Tone.getDestination().mute = true; // pages start silent; M turns sound on
 
   // Which track governs a given bar (null during count-in).
   function trackForBar(bar) {
@@ -123,6 +124,11 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
       state.playing = false;
       if (state.queued !== null) commitQueued();
       state.phraseStart = COUNT_IN_BARS;
+    },
+    // Silences (or restores) all sound; the transport and visuals keep running.
+    toggleMute() {
+      const out = Tone.getDestination();
+      out.mute = !out.mute;
     },
     bpm: () => transport.bpm.value,
     setBpm(bpm) {

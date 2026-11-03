@@ -13,20 +13,16 @@
 </head>
 <body>
   <main class="stage split">
-    <div class="blob" style="--x: -18; --y: -42; --d: 70; --c: var(--color-darkbrown)"></div>
-    <section class="panel">
-      <header class="track-info">
-        <div id="track-year"></div>
-      </header>
+    <section class="panel split-side">
+      <p id="highway-year" class="highway-title"></p>
       <div class="highway-wrap"><canvas id="highway"></canvas></div>
     </section>
-    <section class="panel chart-panel">
-      <h2>Global CO₂ emissions (billion tonnes / year)</h2>
+    <section class="panel chart-panel split-main">
       <div id="chart" class="chart"></div>
-      <p class="help">Space start/stop · ←/→ track · ↑/↓ tempo · 1–7 jump</p>
+      <h2>Global CO₂ emissions (billion tonnes / year)</h2>
+      <p class="help">Space start/stop · ←/→ track · ↑/↓ tempo · 1–7 jump · M sound on/off</p>
     </section>
-    <div id="overlay" class="overlay">Current Emissions</div>
-    <a class="logo" href="../" title="Back to menu"><img src="../images/dcg-logo.png" alt="Data Culture Group logo (back to menu)" /></a>
+    <div id="overlay" class="overlay"><div><span class="movement">Movement 2</span>Current Emissions</div></div>
   </main>
 </body>
 </html>

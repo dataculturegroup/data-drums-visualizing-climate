@@ -98,8 +98,12 @@ a { color: inherit; }
 /* Everything else sits above the circles. */
 .stage > :not(.blob) { position: relative; z-index: 1; }
 
-/* Two-column layout: highway on the left, content on the right. */
-.stage.split { grid-template-columns: 30% 70%; }
+/* Layouts sit on a 12-column grid. Split: highway over the left third (columns 1–4, styled
+   like the warm up's YOU side), content on a green band on the right (columns 5–12, like ME). */
+.stage.split { grid-template-columns: repeat(12, 1fr); }
+.split > .split-side { grid-column: 1 / 5; }
+.split > .split-main { grid-column: 5 / 13; background: var(--color-green); color: var(--color-lightbrown); }
+.panel.split-main .help { color: var(--color-lightbrown); } /* beats .panel .help */
 
 .panel {
   display: flex;
@@ -108,24 +112,17 @@ a { color: inherit; }
   padding: 3cqh 2cqw;
 }
 
-/* Logo pinned bottom-left on every page, in a white rounded box; it links back to the menu. */
-.stage > .logo {
-  position: absolute;
-  bottom: 1cqh;
-  left: 1cqh;
-  display: block;
-  line-height: 0;
-  padding: 1cqh;
-  background: var(--color-white);
-  border-radius: 2cqh;
-  z-index: 2;
-}
-.logo img { height: 10cqh; }
 
 /* Highway panel */
-.track-info { display: flex; flex-direction: column; gap: 1cqh; }
-#track-year { font-family: var(--font-title); font-size: 12cqh; font-weight: var(--title-weight); line-height: 1; }
-#track-desc { font-size: 3cqh; font-weight: 700; max-width: 36cqh; }
+/* Current year, big, centered over the highway. */
+.panel .highway-title {
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+  font-family: var(--font-title);
+  font-size: 12cqh;
+  font-weight: var(--title-weight);
+}
 
 /* Highways run to the very bottom of the stage, so dots enter from the bottom edge. */
 .highway-wrap { flex: 1; min-height: 0; position: relative; margin: 2cqh 0 0; }
@@ -138,16 +135,48 @@ a { color: inherit; }
 .panel h1 { font-size: 12cqh; font-weight: var(--title-weight); line-height: 1.05; margin: 0 0 3cqh; }
 .panel h2 { font-size: 4cqh; font-weight: var(--title-weight); margin: 0 0 2cqh; }
 .panel p, .panel li { font-size: 3.2cqh; line-height: 1.4; }
-.chart { flex: 1; min-height: 0; }
-.chart-panel { padding-top: 16cqh; padding-bottom: 8cqh; padding-right: 1cqh; } /* title starts below the logo; chart runs full width under it */
+.chart { flex: 1; min-height: 0; position: relative; }
+.chart-panel { padding-top: 4cqh; padding-bottom: 6cqh; padding-right: 1cqh; } /* chart runs full width */
+.chart-panel h2 { margin: 1cqh 0 0; font-family: var(--font); font-size: 2.2cqh; font-weight: 400; color: var(--grey-light); } /* axis title, under the chart, faded like the guides */
+/* What was happening in the current year, above its guide (positioned in src/lib/chart.js);
+   bottom-aligned so it sits just over the short dotted line. */
+.panel .chart-note {
+  position: absolute;
+  top: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-size: 2.6cqh;
+  font-weight: 300;
+  line-height: 1.4;
+}
 .chart svg { display: block; }
-.chart text { fill: var(--muted); font-size: 2cqh; font-family: var(--font); }
+.chart text { fill: currentColor; font-size: 2cqh; font-family: var(--font); }
 
-/* Key hints pinned small and faint to the bottom-right corner. */
-.panel .help { /* .panel scope beats the .panel p size rule */
+/* Key hints pinned small and faint to the bottom-right corner, left of the (?) button that
+   shows and hides them (added in src/lib/controls.js). */
+.help[hidden] { display: none; }
+.stage .help-toggle { /* .stage scope beats the .stage > :not(.blob) position rule */
   position: absolute;
   bottom: 1cqh;
   right: 1cqh;
+  z-index: 2;
+  width: 3cqh;
+  height: 3cqh;
+  padding: 0;
+  border: 0.25cqh solid currentColor;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font: 700 1.8cqh/1 var(--font);
+  cursor: pointer;
+}
+.help-toggle:hover, .help-toggle:focus-visible { color: var(--color-red); }
+.panel .help { /* .panel scope beats the .panel p size rule */
+  position: absolute;
+  bottom: 1.6cqh;
+  right: 5cqh;
   margin: 0;
   font-size: 1.6cqh;
   line-height: normal;
@@ -159,11 +188,11 @@ a { color: inherit; }
   position: absolute;
   inset: 0;
   display: grid;
-  place-items: center;
-  /* Shift the title up and left, clear of the spinning rings in the bottom-right corner;
-     long titles wrap onto two lines. */
-  padding: 0 40cqh 15cqh 0;
-  text-align: center;
+  grid-template-columns: repeat(12, 1fr);
+  align-content: center;
+  /* Lift the title up, clear of the spinning rings in the bottom-right corner. */
+  padding-bottom: 15cqh;
+  text-align: left;
   line-height: 1;
   background: var(--bg);
   font-family: var(--font-title);
@@ -173,25 +202,48 @@ a { color: inherit; }
   z-index: 3;
 }
 .stage > .overlay[hidden] { display: none; }
+/* Title starts at column 2; long titles wrap before reaching the rings. */
+.overlay > div { grid-column: 2 / 9; }
+/* Small all-caps "Movement N" label above the start-screen title. */
+.overlay .movement {
+  display: block;
+  margin-bottom: 1.5cqh;
+  font-family: var(--font);
+  font-size: 3cqh;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-darkbrown);
+}
 
 /* Home page: Data Drums logo top-left, with the title and page links stacked under it. */
-.home { align-content: start; }
-.hero-logo { display: block; width: 34cqh; margin: 0 0 3cqh -1cqh; }
+.home { grid-template-columns: repeat(12, 1fr); align-content: start; }
 /* Slowly rotating arc rings behind the home page (built in src/pages/home.js). */
-.rings { background: none; overflow: visible; animation: spin var(--secs) linear infinite; }
-.rings-reverse { animation-direction: reverse; }
+.rings { background: none; overflow: visible; }
+/* Each ring turns on its own, around the centre of the SVG. */
+.rings g { transform-box: view-box; transform-origin: 50% 50%; animation: spin var(--secs) linear infinite; }
+.rings-reverse g { animation-direction: reverse; }
 .overlay > .rings { z-index: -1; } /* under the overlay's title text */
 @keyframes spin { to { rotate: 360deg; } }
-@media (prefers-reduced-motion: reduce) { .rings { animation: none; } }
-.home-main { padding: 4cqh 0 0 10cqh; }
+@media (prefers-reduced-motion: reduce) { .rings g { animation: none; } }
+.home-main { grid-column: 2 / 12; padding-top: 6cqh; } /* starts at the second column */
 .home h1 {
   font-family: var(--font-title);
-  font-size: 11cqh;
+  font-size: 24cqh; /* same as the start-screen titles */
   font-weight: var(--title-weight);
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin: 0 0 2.5cqh;
+  margin: 0 0 -5cqh;
+}
+/* Small all-caps subtitle under the title, styled like the splash "Movement N" label. */
+.home .tagline {
+  margin: 0 0 35.2cqh; /* keeps the links low on the page */
+  font-size: 4.5cqh;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-darkbrown);
 }
 .home nav { display: grid; justify-items: start; gap: 2.5cqh; }
 .home nav a {
@@ -204,7 +256,7 @@ a { color: inherit; }
 .home nav small { display: block; font-size: 2.6cqh; font-weight: 600; margin-top: 0.5cqh; }
 
 /* Solutions: three full-height sector highways side by side, each labeled at the top. */
-.stage.solutions { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto 1fr; }
+.stage.solutions { grid-template-columns: repeat(12, 1fr); grid-template-rows: auto 1fr; }
 /* Small all-caps heading over all three highways, on a full-width black band. */
 .solutions-title {
   grid-column: 1 / -1;
@@ -220,7 +272,7 @@ a { color: inherit; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.sector-panel { padding-top: 1cqh; }
+.sector-panel { grid-column: span 4; padding-top: 1cqh; } /* three sectors, 4 columns each */
 .panel .sector-label { font-size: 7.5cqh; text-align: center; margin: 0; }
 .panel .sector-sub { font-size: 2.4cqh; font-weight: 400; line-height: 1.3; text-align: center; color: var(--muted); max-width: 52cqh; margin: 0.5cqh auto 0; }
 
@@ -244,8 +296,8 @@ a { color: inherit; }
 }
 .stage > .help { /* help sits directly on the stage here, not inside a panel */
   position: absolute;
-  bottom: 1cqh;
-  right: 1cqh;
+  bottom: 1.6cqh;
+  right: 5cqh;
   margin: 0;
   font-size: 1.6cqh;
   white-space: nowrap;
@@ -254,8 +306,12 @@ a { color: inherit; }
 
 /* Warm up: 12-column grid, mirrored call and response.
    YOU label 1–3 | YOU highway 4–6 | ME highway 7–9 | ME label 10–12.
-   Each label sits on its own brand-color circle, which pulses with its highway's hits. */
-.stage.tutorial { grid-template-columns: repeat(12, 1fr); }
+   Each label sits on its own brand-color circle, which pulses with its highway's hits.
+   The ME half (columns 7–12) is green, with a light brown circle and highway dots. */
+.stage.tutorial {
+  grid-template-columns: repeat(12, 1fr);
+  background: linear-gradient(to right, var(--stage-bg) 50%, var(--color-green) 50%);
+}
 .you-label { grid-column: 1 / 4; }
 .you-highway { grid-column: 4 / 7; }
 .me-highway { grid-column: 7 / 10; }
@@ -273,3 +329,4 @@ a { color: inherit; }
   color: var(--color-white);
   pointer-events: none;
 }
+#cue-me { color: var(--color-green); }

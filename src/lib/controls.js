@@ -1,4 +1,4 @@
-// Shared stage controls: Space start/stop, ←/→ tracks, ↑/↓ tempo, 1–9 jump.
+// Shared stage controls: Space start/stop, ←/→ tracks, ↑/↓ tempo, 1–9 jump, M mute.
 const DEFAULT_BPM = 90;
 const MIN_BPM = 40;
 const MAX_BPM = 160;
@@ -23,6 +23,22 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
   }
   overlay.addEventListener('click', togglePlay);
 
+  // The key hints start hidden behind a small (?) button in the bottom-right corner.
+  const help = document.querySelector('.help');
+  if (help) {
+    help.hidden = true;
+    const button = document.createElement('button');
+    button.className = 'help-toggle';
+    button.textContent = '?';
+    button.setAttribute('aria-label', 'Show keyboard controls');
+    button.setAttribute('aria-expanded', 'false');
+    button.addEventListener('click', () => {
+      help.hidden = !help.hidden;
+      button.setAttribute('aria-expanded', String(!help.hidden));
+    });
+    help.after(button);
+  }
+
   function step(d) {
     const next = engine.pendingTrack() + d;
     if (next >= tracks.length && onPastEnd) {
@@ -41,16 +57,9 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     else if (k === 'ArrowLeft') step(-1);
     else if (k === 'ArrowUp') setBpm(bpm + 5);
     else if (k === 'ArrowDown') setBpm(bpm - 5);
+    else if (k === 'm' || k === 'M') engine.toggleMute();
     else if (k >= '1' && k <= String(Math.min(9, tracks.length))) engine.setTrack(+k - 1);
     else return;
     e.preventDefault();
   }, { capture: true });
-}
-
-// Updates the shared track header (#track-year, and #track-desc if present).
-export function renderTrackHeader(engine, tracks) {
-  const cur = tracks[engine.state.current];
-  document.getElementById('track-year').textContent = cur.label;
-  const desc = document.getElementById('track-desc');
-  if (desc) desc.textContent = cur.desc;
 }
