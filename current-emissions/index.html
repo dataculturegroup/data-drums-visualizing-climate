@@ -13,13 +13,16 @@
 </head>
 <body>
   <main class="stage split">
-    <section class="panel split-side">
-      <p id="highway-year" class="highway-title"></p>
-      <div class="highway-wrap"><canvas id="highway"></canvas></div>
-    </section>
-    <section class="panel chart-panel split-main">
+    <section class="panel chart-panel split-main split-chart">
       <div id="chart" class="chart"></div>
       <h2>Global CO₂ emissions (billion tonnes / year)</h2>
+    </section>
+    <section class="panel split-side">
+      <p class="highway-title"><span id="highway-year" class="highway-year"></span></p>
+      <div class="highway-wrap"><canvas id="highway"></canvas></div>
+    </section>
+    <section class="panel story-panel split-story">
+      <p id="history" class="history"></p>
       <p class="help">Space start/stop · ←/→ track · ↑/↓ tempo · 1–7 jump · M sound on/off</p>
     </section>
     <div id="overlay" class="overlay"><div><span class="movement">Movement 2</span>Current Emissions</div></div>

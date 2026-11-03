@@ -98,12 +98,16 @@ a { color: inherit; }
 /* Everything else sits above the circles. */
 .stage > :not(.blob) { position: relative; z-index: 1; }
 
-/* Layouts sit on a 12-column grid. Split: highway over the left third (columns 1–4, styled
-   like the warm up's YOU side), content on a green band on the right (columns 5–12, like ME). */
+/* Layouts sit on a 12-column grid. Split: chart on a green band on the left (columns 1–6),
+   highway in the middle (columns 7–9, styled like the warm up's YOU side), and the year's story
+   in green text on light brown on the right (columns 10–12). */
 .stage.split { grid-template-columns: repeat(12, 1fr); }
-.split > .split-side { grid-column: 1 / 5; }
-.split > .split-main { grid-column: 5 / 13; background: var(--color-green); color: var(--color-lightbrown); }
+.split > .split-chart { grid-column: 1 / 7; }
+.split > .split-side { grid-column: 7 / 10; }
+.split > .split-story { grid-column: 10 / 13; background: var(--color-lightbrown); color: var(--color-green); }
+.split > .split-main { background: var(--color-green); color: var(--color-lightbrown); }
 .panel.split-main .help { color: var(--color-lightbrown); } /* beats .panel .help */
+.panel.split-story .help { color: var(--color-green); }
 
 .panel {
   display: flex;
@@ -135,22 +139,33 @@ a { color: inherit; }
 .panel h1 { font-size: 12cqh; font-weight: var(--title-weight); line-height: 1.05; margin: 0 0 3cqh; }
 .panel h2 { font-size: 4cqh; font-weight: var(--title-weight); margin: 0 0 2cqh; }
 .panel p, .panel li { font-size: 3.2cqh; line-height: 1.4; }
-.chart { flex: 1; min-height: 0; position: relative; }
-.chart-panel { padding-top: 4cqh; padding-bottom: 6cqh; padding-right: 1cqh; } /* chart runs full width */
-.chart-panel h2 { margin: 1cqh 0 0; font-family: var(--font); font-size: 2.2cqh; font-weight: 400; color: var(--grey-light); } /* axis title, under the chart, faded like the guides */
-/* What was happening in the current year, above its guide (positioned in src/lib/chart.js);
-   bottom-aligned so it sits just over the short dotted line. */
-.panel .chart-note {
+.chart { flex: none; height: 52cqh; position: relative; } /* 60% of the panel's full height */
+.chart-panel { justify-content: center; padding-right: 1cqh; } /* chart runs full width, centered top to bottom */
+/* Axis title under the chart, faded like the guides, starting under the first tick label
+   (--axis-start is set in src/lib/chart.js). */
+.chart-panel h2 { margin: 1cqh 0 0 var(--axis-start, 0); font-family: var(--font); font-size: 2.2cqh; font-weight: 400; color: var(--grey-light); }
+/* What was happening in the current year: big and left aligned, its first line level with the
+   highway's year (padding-top centers a 1.3-line box at 8cqh, the middle of the year's digits). */
+.story-panel { padding-top: calc(8cqh - 0.65 * 4.2cqh); }
+.panel .history { position: relative; margin: 0; font-size: 4.2cqh; font-weight: 300; line-height: 1.3; }
+
+/* Dotted connectors from the highway's year: right to the start of the year's story, and left
+   to meet the chart's line (drawn in src/lib/chart.js). Green on light brown, light brown on
+   green. Dashes match the chart's year guides. */
+.highway-year, .panel .history { --dash: 3px; --gap: 4px; }
+.highway-year { position: relative; }
+.highway-year::before, .highway-year::after, .panel .history::before {
+  content: '';
   position: absolute;
-  top: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  font-size: 2.6cqh;
-  font-weight: 300;
-  line-height: 1.4;
+  height: 2px;
+  background: repeating-linear-gradient(to right, var(--c) 0 var(--dash), transparent var(--dash) calc(var(--dash) + var(--gap)));
 }
+.highway-year::before, .highway-year::after { --c: var(--color-green); width: 100cqw; top: calc(50% - 1cqh); } /* Teko digits sit high in the line */
+.highway-year::before { right: calc(100% + 1.5cqh); }
+.highway-year::after { left: calc(100% + 1.5cqh); }
+.split-side { overflow: hidden; } /* the year's connectors stop at the column edges */
+.chart svg { overflow: visible; } /* the chart's connector runs up out of the chart */
+.panel .history::before { --c: var(--color-green); right: calc(100% + 1.5cqh); width: calc(2cqw - 1.5cqh); top: 0.65em; }
 .chart svg { display: block; }
 .chart text { fill: currentColor; font-size: 2cqh; font-family: var(--font); }
 

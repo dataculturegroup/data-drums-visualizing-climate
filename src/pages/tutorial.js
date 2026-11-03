@@ -16,7 +16,7 @@ const pulse = (lane) =>
 createHighway(document.getElementById('highway-you'), engine, { lanes: ['you'], colors: { you: 'red' }, onHit: pulse });
 createHighway(document.getElementById('highway-me'), engine, { lanes: ['me'], colors: { me: 'lightbrown' }, targetColor: 'lightbrown', onHit: pulse });
 // → past the last step stops and returns to the home screen.
-bindControls(engine, tracks, { bpm: 110, onPastEnd: () => location.assign('../') });
+bindControls(engine, tracks, { bpm: 110, onPastEnd: () => location.assign('../current-emissions/') });
 
 // Spinning rings on the start screen only; they go away with it once playing starts.
 addRings(document.getElementById('overlay'));

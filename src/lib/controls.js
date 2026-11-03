@@ -53,6 +53,7 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     const k = e.key;
     if (e.repeat && k === ' ') return;
     if (k === ' ') togglePlay();
+    else if (k === 'ArrowRight' && !overlay.hidden) togglePlay(); // from the start screen into step one
     else if (k === 'ArrowRight') step(1);
     else if (k === 'ArrowLeft') step(-1);
     else if (k === 'ArrowUp') setBpm(bpm + 5);

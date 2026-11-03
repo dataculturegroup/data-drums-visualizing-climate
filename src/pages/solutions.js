@@ -15,7 +15,7 @@ function onTrackChange() {
 for (const { lane, color } of sectors) {
   createHighway(document.getElementById(`highway-${lane}`), engine, { lanes: [lane], colors: { [lane]: color } });
 }
-bindControls(engine, tracks, { bpm: 90 });
+bindControls(engine, tracks, { bpm: 90, onPastEnd: () => location.assign('../') });
 
 createTips(
   engine,
