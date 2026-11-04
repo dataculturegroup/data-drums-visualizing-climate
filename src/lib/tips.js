@@ -2,6 +2,7 @@ import { TICKS_PER_BAR } from './patterns.js';
 import { COUNT_IN_BARS } from './engine.js';
 
 const TIP_BARS = 1; // how long each tip stays up
+const TIP_EVERY_TICKS = 24; // a new tip every 3 beats (32nd-note ticks)
 // Tips pop in with a size overshoot (ease-out-back) while opacity rises linearly, and shrink
 // away the same way in reverse.
 const POP_IN_MS = 450;
@@ -9,7 +10,7 @@ const POP_OUT_MS = 300;
 const EASE_OUT_BACK = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 const EASE_IN_BACK = 'cubic-bezier(0.36, 0, 0.66, -0.56)';
 
-// Pop-up tips over a set of highways. Each bar, the next highway in turn pops one tip from
+// Pop-up tips over a set of highways. Every 3 beats, the next highway in turn pops one tip from
 // its list for the current track, so tips appear one at a time across the highways. Each
 // tip is shown only once per page load; a highway with none left skips its turn.
 // sectors: [{ wrap: element to place tips in, color, tipsFor(trackIndex) -> string[] }]
@@ -17,7 +18,7 @@ const EASE_IN_BACK = 'cubic-bezier(0.36, 0, 0.66, -0.56)';
 export function createTips(engine, sectors, { groupOf = () => null } = {}) {
   const used = new Set(); // tip texts already shown
   const showing = new Set();
-  let lastBar = -1;
+  let lastSlot = -1;
   let lastGroup;
 
   function show(sector, text) {
@@ -58,12 +59,14 @@ export function createTips(engine, sectors, { groupOf = () => null } = {}) {
   }
 
   function frame() {
-    const bar = Math.floor(engine.nowTicks() / TICKS_PER_BAR);
+    const now = engine.nowTicks();
+    const bar = Math.floor(now / TICKS_PER_BAR);
+    const slot = Math.floor((now - COUNT_IN_BARS * TICKS_PER_BAR) / TIP_EVERY_TICKS);
     if (!engine.state.playing) {
-      lastBar = -1;
-    } else if (bar !== lastBar && bar >= COUNT_IN_BARS) {
-      lastBar = bar;
-      const si = (bar - COUNT_IN_BARS) % sectors.length;
+      lastSlot = -1;
+    } else if (slot !== lastSlot && bar >= COUNT_IN_BARS) {
+      lastSlot = slot;
+      const si = slot % sectors.length;
       const t = engine.trackForBar(bar);
       if (groupOf(t) !== lastGroup) clear();
       lastGroup = groupOf(t);
