@@ -264,23 +264,40 @@ a { color: inherit; }
 }
 /* Small all-caps subtitle under the title, styled like the splash "Movement N" label. */
 .home .tagline {
-  margin: 0 0 35.2cqh; /* keeps the links low on the page */
+  margin: 0;
   font-size: 4.5cqh;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-darkbrown);
 }
+/* Title and tagline on a light brown block over the lines; the negative margins keep the text
+   where it was, and the bottom margin keeps the links low on the page. */
+.home-title {
+  width: fit-content;
+  padding: 2cqh 2.5cqh;
+  margin: -2cqh -2.5cqh 0;
+  background: var(--color-lightbrown);
+}
+/* Author's name in its own smaller block under the title; its bottom margin keeps the links low
+   on the page. */
+.home-credit {
+  width: fit-content;
+  padding: 1cqh 2.5cqh;
+  margin: 3cqh -2.5cqh 24.55cqh;
+  background: var(--color-lightbrown);
+  font-size: 3cqh;
+  font-weight: 600;
+}
 .home nav { display: grid; justify-items: start; gap: 0.5cqh; }
 /* Diagonal lines: thin 45° lines (bottom left to top right) behind an element's content. Add the
-   `lined` class to any positioned element; --lines-top starts them partway down (default: the
-   top). This is the only place the lines are styled. Softened by mixing dark brown into the
+   `lined` class to any positioned element. This is the only place the lines are styled. Softened by mixing dark brown into the
    light brown page as a solid color, not by opacity. */
 .lined { isolation: isolate; } /* keeps the lines above the element's own background */
 .lined::before {
   content: '';
   position: absolute;
-  inset: var(--lines-top, 0) 0 0 0;
+  inset: 0;
   /* One diagonal per square tile (plus the corner bits that join it to the next tile). The tile
      is rounded to whole pixels so every line renders the same; a gradient spreads unevenly. */
   --tile: round(down, 1.8cqh, 1px);
@@ -289,7 +306,6 @@ a { color: inherit; }
   z-index: -1;
   pointer-events: none;
 }
-.home { --lines-top: 38%; } /* home page: lines over the bottom 62% only */
 /* Links sit on a light brown block so the lines don't run through them; the negative margin
    keeps the text itself on column 2. */
 .home nav a {
@@ -371,6 +387,10 @@ a { color: inherit; }
 .you-highway { grid-column: 4 / 7; }
 .me-highway { grid-column: 7 / 10; }
 .me-label { grid-column: 10 / 13; }
+/* One column of diagonal lines down each outer edge, behind the YOU and ME circles. */
+.stage > .edge-lines { position: absolute; top: 0; bottom: 0; width: calc(100% / 12); z-index: 0; }
+.edge-left { left: 0; }
+.edge-right { right: 0; }
 .highway-panel { padding-top: 3cqh; }
 .highway-panel .highway-wrap { margin-top: 0; }
 .cue-label { justify-content: center; align-items: center; }
