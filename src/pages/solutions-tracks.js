@@ -45,9 +45,10 @@ const only2040 = (stage) => Object.fromEntries(Object.entries(stage).filter(([, 
 const stageOf = (nowCount, futureCount) =>
   Object.fromEntries(lanes.slice(0, nowCount).map((lane, i) => [lane, i < futureCount ? '2040' : 'now']));
 
+const phase1Titles = 'reductions over the last few years';
 export const tracks = [
-  step('Empty', 'current emissions reductions', 'the three highways, no beats', {}),
-  ...sectors.map((s, i) => step(`Now ${i + 1}`, 'current emissions reductions', `add ${s.label} today`, stageOf(i + 1, 0))),
+  step('Empty', phase1Titles, 'the three highways, no beats', {}),
+  ...sectors.map((s, i) => step(`Now ${i + 1}`, phase1Titles, `add ${s.label} today`, stageOf(i + 1, 0))),
   ...sectors.map((s, i) => {
     const stage = stageOf(lanes.length, i + 1);
     return step(`Future ${i + 1}`, 'coming back down to 1.5° by 2040', `${s.label} moves to 2040`, stage, only2040(stage));

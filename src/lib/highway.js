@@ -5,6 +5,7 @@ const LOOKAHEAD_BARS = 2; // how much of the future is visible below the hit lin
 export const GLOW_MS = 250; // how long the target glows after a hit
 // Grey of the bar lines; also outlines the notes so stacked dots stay distinct.
 const LINE_RGB = '110, 110, 110';
+const BEAT_RGB = '165, 165, 165'; // lighter grey of the beat lines
 const HIT_LEAD_MS = 80; // start the hit pulse this much before the dot is centered on the target
 
 // All highways draw from one shared animation loop, reading the transport position once
@@ -21,7 +22,8 @@ function loop(ms) {
 // opts.colors: { lane: brand color name } for the notes and hit pulse (default: green).
 // opts.onHit(lane): called the frame a note reaches the target, to sync other animations.
 // opts.targetColor: brand color name for the target outline (default: dark grey).
-export function createHighway(canvas, engine, { lanes = engine.lanes, colors = {}, onHit, targetColor } = {}) {
+// opts.lightBarLines: draw bar lines in the beat lines' lighter grey (still thicker), for dark backgrounds.
+export function createHighway(canvas, engine, { lanes = engine.lanes, colors = {}, onHit, targetColor, lightBarLines } = {}) {
   const laneColor = (lane) => color(colors[lane] ?? 'green');
   const ctx = canvas.getContext('2d');
   let w = 0;
@@ -60,8 +62,8 @@ export function createHighway(canvas, engine, { lanes = engine.lanes, colors = {
       g.addColorStop(1, `rgba(${rgb}, 0)`);
       return g;
     };
-    const barLine = fadeLine(LINE_RGB);
-    const beatLine = fadeLine('165, 165, 165');
+    const barLine = fadeLine(lightBarLines ? BEAT_RGB : LINE_RGB);
+    const beatLine = fadeLine(BEAT_RGB);
     const firstTick = Math.floor(now / 8) * 8;
     for (let t = firstTick; yAt(t) < h; t += 8) {
       const y = yAt(t);

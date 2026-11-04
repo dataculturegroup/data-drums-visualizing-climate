@@ -7,16 +7,16 @@
       { "text": "More solar and wind power", "scale": "collective", "ipcc_option": "Fuel switching (gas to electricity)", "source": "IPCC SPM.7" }
     ],
     "2040": [
-      { "text": "Phase down oil and gas", "scale": "collective", "ipcc_option": "Transition away from fossil fuels (oil and gas)", "source": "UNEP EGR 2026" },
-      { "text": "Pull carbon out of the sky", "scale": "collective", "ipcc_option": "Carbon dioxide removal (direct air capture, storage)", "source": "UNEP EGR 2026" },
-      { "text": "Put a price on carbon", "scale": "collective", "ipcc_option": "Carbon pricing", "source": "IPCC SPM E (policy)" },
-      { "text": "Make green steel standard", "scale": "collective", "ipcc_option": "Fuel switching (hydrogen steel)", "source": "IPCC SPM.7" },
-      { "text": "Build schools with clean concrete", "scale": "collective", "ipcc_option": "Cementitious material substitution (public procurement)", "source": "IPCC SPM.7 + SPM E (policy)" },
-      { "text": "Electrify all factories", "scale": "collective", "ipcc_option": "Fuel switching (electrification)", "source": "IPCC SPM.7" },
-      { "text": "Plug leaky gas wells", "scale": "collective", "ipcc_option": "Reduce methane from coal, oil and gas", "source": "IPCC SPM.7" },
-      { "text": "Rich countries pay their share", "scale": "collective", "ipcc_option": "Climate finance", "source": "IPCC SPM E.5 (finance)" },
-      { "text": "Keep your phone for longer", "scale": "individual", "ipcc_option": "Material efficiency", "source": "IPCC SPM.7" },
-      { "text": "Re-use and repair clothes", "scale": "individual", "ipcc_option": "Material efficiency (demand)", "source": "IPCC SPM.6" }
+      { "text": "Phase down oil and gas", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Transition away from fossil fuels (oil and gas)", "source": "UNEP EGR 2026" },
+      { "text": "Put a price on carbon", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Carbon pricing", "source": "IPCC SPM E (policy)", "note": "Works until net zero; paying for removals afterward needs new policy tools" },
+      { "text": "Plug leaky gas wells", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Reduce methane from coal, oil and gas", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
+      { "text": "Make green steel standard", "scale": "collective", "strategy": "cut_residual_co2", "ipcc_option": "Fuel switching (hydrogen steel)", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
+      { "text": "Build with clean concrete", "scale": "collective", "strategy": "cut_residual_co2", "ipcc_option": "Cementitious material substitution (public procurement)", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
+      { "text": "Electrify all factories", "scale": "collective", "strategy": "cut_residual_co2", "ipcc_option": "Fuel switching (electrification)", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
+      { "text": "Capture carbon from the air", "scale": "collective", "strategy": "carbon_removal", "ipcc_option": "Direct air capture and storage", "source": "Reisinger et al. 2025", "note": "Very costly and not yet deployed at scale" },
+      { "text": "The rich go net-negative first", "scale": "collective", "strategy": "go_net_negative", "ipcc_option": "Net-negative emissions targets", "source": "Reisinger et al. 2025" },
+      { "text": "Keep your phone for longer", "scale": "individual", "strategy": "cut_residual_co2", "ipcc_option": "Material efficiency (demand)", "source": "IPCC SPM.7" },
+      { "text": "Re-use and repair clothes", "scale": "individual", "strategy": "cut_residual_co2", "ipcc_option": "Material efficiency (demand)", "source": "IPCC SPM.6" }
     ]
   },
   "food_and_land": {
@@ -26,16 +26,15 @@
       { "text": "Slowing deforestation", "scale": "collective", "ipcc_option": "Reduced conversion of forests and ecosystems", "source": "IPCC SPM.7 + UNEP EGR 2026" }
     ],
     "2040": [
-      { "text": "Stop deforestation completely", "scale": "collective", "ipcc_option": "Reduced conversion of forests and ecosystems", "source": "IPCC SPM.7 + UNEP EGR 2026" },
-      { "text": "Plant forests and rebuild wetlands", "scale": "collective", "ipcc_option": "Ecosystem restoration, afforestation and reforestation (carbon removal)", "source": "IPCC SPM.7 + UNEP EGR 2026" },
-      { "text": "Pay farmers to store carbon", "scale": "collective", "ipcc_option": "Carbon sequestration in agriculture (subsidy reform)", "source": "IPCC SPM.7 + SPM E (policy)" },
-      { "text": "Switch cowfeed to seaweed", "scale": "collective", "ipcc_option": "Reduce CH4 and N2O in agriculture", "source": "IPCC SPM.7" },
-      { "text": "Grow low-methane rice", "scale": "collective", "ipcc_option": "Reduce CH4 and N2O in agriculture", "source": "IPCC SPM.7" },
-      { "text": "Capture landfill gas", "scale": "collective", "ipcc_option": "Reduce methane from solid waste", "source": "IPCC SPM.7" },
-      { "text": "Serve bean burgers at school", "scale": "collective", "ipcc_option": "Shift to sustainable healthy diets (public procurement)", "source": "IPCC SPM.6 + SPM E (policy)" },
-      { "text": "Eat mostly plants", "scale": "individual", "ipcc_option": "Shift to sustainable healthy diets", "source": "IPCC SPM.6" },
-      { "text": "Snack on cricket bars", "scale": "individual", "ipcc_option": "Shift to sustainable healthy diets (alternative proteins)", "source": "IPCC SPM.6" },
-      { "text": "Never throw away food", "scale": "individual", "ipcc_option": "Reduce food loss and waste", "source": "IPCC SPM.7" }
+      { "text": "Stop deforestation completely", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Reduced conversion of forests and ecosystems", "source": "IPCC SPM.7 + Reisinger et al. 2025", "cobenefit": "Lowers Amazon tipping-point risk" },
+      { "text": "Capture landfill gas", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Reduce methane from solid waste", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
+      { "text": "Never throw away food", "scale": "individual", "strategy": "reach_net_zero", "ipcc_option": "Reduce food loss and waste", "source": "IPCC SPM.7" },
+      { "text": "Switch cowfeed to seaweed", "scale": "collective", "strategy": "deeper_methane_cuts", "ipcc_option": "Methane inhibitors for livestock", "source": "Reisinger et al. 2025" },
+      { "text": "Grow low-methane rice", "scale": "collective", "strategy": "deeper_methane_cuts", "ipcc_option": "Reduce CH4 and N2O in agriculture", "source": "IPCC SPM.7" },
+      { "text": "Eat mostly plants", "scale": "individual", "strategy": "deeper_methane_cuts", "ipcc_option": "Shift to sustainable healthy diets", "source": "IPCC SPM.6 + Reisinger et al. 2025", "cobenefit": "Frees grazing land for forests" },
+      { "text": "Snack on cricket bars", "scale": "individual", "strategy": "deeper_methane_cuts", "ipcc_option": "Shift to sustainable healthy diets (alternative proteins)", "source": "IPCC SPM.6" },
+      { "text": "Plant forests and rebuild wetlands", "scale": "collective", "strategy": "carbon_removal", "ipcc_option": "Afforestation, reforestation and ecosystem restoration", "source": "IPCC SPM.7 + Reisinger et al. 2025", "note": "Competes with food for land; vulnerable to fires" },
+      { "text": "Pay farmers to store carbon", "scale": "collective", "strategy": "carbon_removal", "ipcc_option": "Carbon sequestration in agriculture (subsidy reform)", "source": "IPCC SPM.7 + Reisinger et al. 2025", "note": "Soil carbon can be lost again" }
     ]
   },
   "getting_around_and_living": {
@@ -45,16 +44,16 @@
       { "text": "Phasing out super-polluting fridge gases", "scale": "collective", "ipcc_option": "Reduction of non-CO2 emissions (F-gases)", "source": "IPCC SPM.7" }
     ],
     "2040": [
-      { "text": "Triple grid wind and solar power", "scale": "collective", "ipcc_option": "Solar and wind energy", "source": "IPCC SPM.7 + UNEP EGR 2026" },
-      { "text": "Store sunshine for nighttime", "scale": "collective", "ipcc_option": "Grid storage and flexibility", "source": "IPCC AR6 WGIII (energy systems)" },
-      { "text": "Shut down all coal plants", "scale": "collective", "ipcc_option": "Transition away from coal", "source": "UNEP EGR 2026" },
-      { "text": "Electrify trucks and clean up ships", "scale": "collective", "ipcc_option": "Electric heavy-duty vehicles; shipping efficiency and fuels", "source": "IPCC SPM.7" },
-      { "text": "Build and use global high speed rail", "scale": "collective", "ipcc_option": "Shift to public transportation", "source": "IPCC SPM.7" },
-      { "text": "Build bikeable, walkable cities", "scale": "collective", "ipcc_option": "Compact cities; shift to bikes and e-bikes", "source": "IPCC SPM.7 + SPM.6" },
-      { "text": "Make every building zero-carbon", "scale": "collective", "ipcc_option": "High-performance new buildings and retrofits (building codes)", "source": "IPCC SPM.7 + SPM E (policy)" },
-      { "text": "Drive electric", "scale": "individual", "ipcc_option": "Electric light-duty vehicles", "source": "IPCC SPM.7" },
-      { "text": "Fly only every few years", "scale": "individual", "ipcc_option": "Avoid long-haul flights", "source": "IPCC SPM.6" },
-      { "text": "Get paid for small-scale clean power", "scale": "individual", "ipcc_option": "Onsite renewable production and use", "source": "IPCC SPM.7" }
+      { "text": "Triple grid wind and solar power", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Solar and wind energy", "source": "IPCC SPM.7 + UNEP EGR 2026" },
+      { "text": "Store sunshine for nighttime use", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Grid storage and flexibility", "source": "IPCC AR6 WGIII (energy systems)" },
+      { "text": "Shut down all coal plants", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Transition away from coal", "source": "UNEP EGR 2026" },
+      { "text": "Build and use global high speed rail", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Shift to public transportation", "source": "IPCC SPM.7" },
+      { "text": "Build bikeable, walkable cities", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "Compact cities; shift to bikes and e-bikes", "source": "IPCC SPM.7 + SPM.6" },
+      { "text": "Make every building zero-carbon", "scale": "collective", "strategy": "reach_net_zero", "ipcc_option": "High-performance new buildings and retrofits (building codes)", "source": "IPCC SPM.7 + Reisinger et al. 2025", "cobenefit": "Better building design also reduces heat stress" },
+      { "text": "Drive electric", "scale": "individual", "strategy": "reach_net_zero", "ipcc_option": "Electric light-duty vehicles", "source": "IPCC SPM.7" },
+      { "text": "Get paid for small-scale clean power", "scale": "individual", "strategy": "reach_net_zero", "ipcc_option": "Onsite renewable production and use", "source": "IPCC SPM.7" },
+      { "text": "Electrify trucks and clean up ships", "scale": "collective", "strategy": "cut_residual_co2", "ipcc_option": "Electric heavy-duty vehicles; shipping efficiency and fuels", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
+      { "text": "Fly only every few years", "scale": "individual", "strategy": "cut_residual_co2", "ipcc_option": "Avoid long-haul flights", "source": "IPCC SPM.6 + Reisinger et al. 2025", "note": "Aviation is hard to decarbonize; large-scale biofuels would compete with food" }
     ]
   }
 }

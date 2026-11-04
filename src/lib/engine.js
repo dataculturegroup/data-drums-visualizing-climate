@@ -8,9 +8,11 @@ export const COUNT_IN_BARS = 1;
 
 // With sound on, draw this far ahead of the audio clock to cover display lag (rAF +
 // compositor + projector) so dots land when the hit is heard. Calibrated earlier by ear.
-const VISUAL_LEAD_MS = 130;
+const VISUAL_LEAD_MS = 70;
 
 // sounds: optional { lane: 'clap' | 'stomp' | 'thigh' }. Lanes without a sound are silent.
+// A track's optional `sound` overrides it for every lane while that track plays: a name, or
+// (pos) => name to pick by 32nd-note position within the bar.
 export function createEngine({ tracks, onTrackChange, sounds = {} }) {
   const hitSets = buildHitSets(tracks);
   const lanes = lanesOf(tracks);
@@ -26,8 +28,13 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
     playing: false,
   };
 
-  const triggers = Object.fromEntries(Object.entries(sounds).map(([lane, name]) => [lane, voices[name]()]));
-  const hasSound = Object.keys(triggers).length > 0;
+  // One voice per sound name, shared by lanes and tracks that use it.
+  const trackSounds = tracks.map((t) => t.sound).filter(Boolean);
+  const names = trackSounds.some((s) => typeof s === 'function')
+    ? Object.keys(voices) // can't tell which a function picks, so have them all ready
+    : [...new Set([...Object.values(sounds), ...trackSounds])];
+  const voiceFor = Object.fromEntries(names.map((name) => [name, voices[name]()]));
+  const hasSound = names.length > 0;
   Tone.getDestination().mute = true; // pages start silent; M turns sound on
 
   // Which track governs a given bar (null during count-in).
@@ -66,10 +73,13 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
     const pos = tick % TICKS_PER_BAR;
     if (pos === 0 && state.queued !== null && bar >= state.switchBar) draw.schedule(commitQueued, time);
     if (!hasSound) return;
-    const barHits = hitsForBar(bar);
-    if (!barHits) return;
-    for (const [lane, trigger] of Object.entries(triggers)) {
-      if (barHits[lane]?.has(pos)) trigger(time);
+    const t = trackForBar(bar);
+    if (t === null) return;
+    const barHits = hitSets[t][phraseBarAt(bar)];
+    for (const [lane, ticks] of Object.entries(barHits)) {
+      const { sound } = tracks[t];
+      const name = (typeof sound === 'function' ? sound(pos) : sound) ?? sounds[lane];
+      if (name && ticks.has(pos)) voiceFor[name](time);
     }
   }, '32n', 0);
 

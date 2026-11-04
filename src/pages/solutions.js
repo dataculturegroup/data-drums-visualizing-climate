@@ -13,18 +13,25 @@ const subs = sectors.map(({ lane, reduction }) => {
   const el = document.getElementById(`sub-${lane}`);
   return { lane, el, desc: el.textContent, reduction };
 });
+// "stomp your feet" etc. stay hidden until you advance into the step that brings that sector's beat
+// in. These, the title and the subtitles follow the queued step so they change as soon as you press the arrow,
+// before its first dot reaches the target.
+const motions = sectors.map(({ lane }) => ({ lane, el: document.getElementById(`motion-${lane}`) }));
 const engine = createEngine({ tracks, onTrackChange, sounds });
 function onTrackChange() {
-  const track = tracks[engine.state.current];
-  title.textContent = track.title;
+  const pending = tracks[engine.pendingTrack()];
+  title.textContent = pending.title;
   for (const { lane, el, desc, reduction } of subs) {
-    el.textContent = track.tips[lane] === '2040' ? reduction : desc;
+    el.textContent = pending.tips[lane] === '2040' ? reduction : desc;
+  }
+  for (const { lane, el } of motions) {
+    el.style.visibility = pending.hits.some((h) => h.lane === lane) ? '' : 'hidden';
   }
 }
 for (const { lane, color } of sectors) {
   createHighway(document.getElementById(`highway-${lane}`), engine, { lanes: [lane], colors: { [lane]: color } });
 }
-bindControls(engine, tracks, { bpm: 90, onPastEnd: () => location.assign('../') });
+bindControls(engine, tracks, { bpm: 95, onPastEnd: () => location.assign('../') });
 
 createTips(
   engine,
