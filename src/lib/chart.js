@@ -73,15 +73,17 @@ export function createChart(container, data, trackYears, { connectTo } = {}) {
     label.attr('x', Math.max(half, Math.min(width - half, cx)));
 
     if (connectTo) {
-      // Up from the emissions, then right to the panel's edge, level with the year's own
-      // connector (its middle, less 1cqh because Teko digits sit high in the line).
+      // Up from the emissions, round the corner, then right to the panel's edge, level with the
+      // year's own connector (its middle, less 1cqh because Teko digits sit high in the line).
       const box = container.getBoundingClientRect();
       const target = connectTo.getBoundingClientRect();
       const cqh = container.closest('.stage').getBoundingClientRect().height / 100;
       const ly = target.top + target.height / 2 - cqh - box.top;
       const lx = container.parentElement.getBoundingClientRect().right - box.left;
+      const y0 = gtBase - gtSize - gap;
+      const r = Math.max(0, Math.min(fs * 2, y0 - ly, lx - cx)); // corner radius, fits the space
       svg.append('path')
-        .attr('d', `M${cx},${gtBase - gtSize - gap}V${ly}H${lx}`)
+        .attr('d', `M${cx},${y0}V${ly + r}A${r},${r} 0 0 1 ${cx + r},${ly}H${lx}`)
         .attr('fill', 'none').attr('stroke', hi).attr('stroke-width', 2).attr('stroke-dasharray', '3 4');
     }
   }

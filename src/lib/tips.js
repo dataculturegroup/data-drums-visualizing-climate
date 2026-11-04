@@ -1,7 +1,13 @@
 import { TICKS_PER_BAR } from './patterns.js';
 import { COUNT_IN_BARS } from './engine.js';
 
-const TIP_BARS = 2; // how long each tip stays up (it fades out at the end)
+const TIP_BARS = 1; // how long each tip stays up
+// Tips pop in with a size overshoot (ease-out-back) while opacity rises linearly, and shrink
+// away the same way in reverse.
+const POP_IN_MS = 450;
+const POP_OUT_MS = 300;
+const EASE_OUT_BACK = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+const EASE_IN_BACK = 'cubic-bezier(0.36, 0, 0.66, -0.56)';
 
 // Pop-up tips over a set of highways. Each bar, the next highway in turn pops one tip from
 // its list for the current track, so tips appear one at a time across the highways. Each
@@ -22,16 +28,22 @@ export function createTips(engine, sectors, { groupOf = () => null } = {}) {
     sector.wrap.append(tip);
     showing.add(tip);
     const ms = (TIP_BARS * 4 * 60 * 1000) / engine.bpm();
+    const inAt = POP_IN_MS / ms;
+    const outAt = 1 - POP_OUT_MS / ms;
+    // Size and opacity run as separate animations so each gets its own easing.
+    tip.animate(
+      [
+        { scale: 0.2, easing: EASE_OUT_BACK },
+        { scale: 1, offset: inAt },
+        { scale: 1, offset: outAt, easing: EASE_IN_BACK },
+        { scale: 0.2 },
+      ],
+      { duration: ms },
+    );
     tip
       .animate(
-        [
-          { opacity: 0, transform: 'translateX(-50%) scale(0.6)' },
-          { opacity: 1, transform: 'translateX(-50%) scale(1.05)', offset: 0.06 },
-          { opacity: 1, transform: 'translateX(-50%) scale(1)', offset: 0.1 },
-          { opacity: 1, transform: 'translateX(-50%) scale(1)', offset: 0.75 },
-          { opacity: 0, transform: 'translateX(-50%) scale(1)' },
-        ],
-        { duration: ms, easing: 'ease-out' },
+        [{ opacity: 0 }, { opacity: 1, offset: inAt }, { opacity: 1, offset: outAt }, { opacity: 0 }],
+        { duration: ms, easing: 'linear' },
       )
       .finished.then(() => tip.remove(), () => {}) // rejected when clear() cancels it
       .finally(() => showing.delete(tip));

@@ -8,9 +8,18 @@ import tips from '../data/solutions-tips.json';
 
 const sounds = Object.fromEntries(sectors.map((s) => [s.lane, s.sound]));
 const title = document.getElementById('solutions-title');
+// Each sector's subtitle, and the description it shows until the sector moves to 2040.
+const subs = sectors.map(({ lane, reduction }) => {
+  const el = document.getElementById(`sub-${lane}`);
+  return { lane, el, desc: el.textContent, reduction };
+});
 const engine = createEngine({ tracks, onTrackChange, sounds });
 function onTrackChange() {
-  title.textContent = tracks[engine.state.current].title;
+  const track = tracks[engine.state.current];
+  title.textContent = track.title;
+  for (const { lane, el, desc, reduction } of subs) {
+    el.textContent = track.tips[lane] === '2040' ? reduction : desc;
+  }
 }
 for (const { lane, color } of sectors) {
   createHighway(document.getElementById(`highway-${lane}`), engine, { lanes: [lane], colors: { [lane]: color } });
