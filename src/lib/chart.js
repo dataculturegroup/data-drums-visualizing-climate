@@ -13,7 +13,7 @@ export function createChart(container, data, trackYears, { connectTo } = {}) {
     const { width, height } = container.getBoundingClientRect();
     const fs = Math.min(width / 30, height / 32); // font size scales with the panel
     const ink = getComputedStyle(container).color; // the axis follows the panel's text color
-    const hi = color('lightbrown'); // the current year's guide, label and connector
+    const hi = color('green'); // the current year's guide, label and connector
     svg.attr('width', width).attr('height', height);
     svg.selectAll('*').remove();
 
@@ -40,7 +40,7 @@ export function createChart(container, data, trackYears, { connectTo } = {}) {
     const firstTick = svg.select('.tick text').node();
     container.parentElement.style.setProperty('--axis-start', `${firstTick.getBBox().x + x.range()[0]}px`);
 
-    // Track-year guides: faded grey, except the current one in light brown and thicker.
+    // Track-year guides: faded grey, except the current one in green and thicker.
     svg.append('g').selectAll('line').data(trackYears).join('line')
       .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
       .attr('y1', m.top).attr('y2', height - m.bottom)
