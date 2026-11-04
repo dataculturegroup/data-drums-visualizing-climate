@@ -2,7 +2,9 @@
   "making_things": {
     "now": [
       { "text": "Shopping at Goodwill", "scale": "individual", "ipcc_option": "Material efficiency", "source": "IPCC SPM.7" },
-      { "text": "Passing right-to-repair laws", "scale": "collective", "ipcc_option": "Material efficiency (regulation)", "source": "IPCC SPM.7 + SPM E (policy)" }
+      { "text": "Passing right-to-repair laws", "scale": "collective", "ipcc_option": "Material efficiency (regulation)", "source": "IPCC SPM.7 + SPM E (policy)" },
+      { "text": "Switching from goal to gas", "scale": "collective", "ipcc_option": "Fuel switching (gas to electricity)", "source": "IPCC SPM.7" },
+      { "text": "More solar and wind power", "scale": "collective", "ipcc_option": "Fuel switching (gas to electricity)", "source": "IPCC SPM.7" }
     ],
     "2040": [
       { "text": "Phase down oil and gas", "scale": "collective", "ipcc_option": "Transition away from fossil fuels (oil and gas)", "source": "UNEP EGR 2026" },
