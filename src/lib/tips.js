@@ -2,7 +2,7 @@ import { TICKS_PER_BAR } from './patterns.js';
 import { COUNT_IN_BARS } from './engine.js';
 
 const TIP_BARS = 1; // how long each tip stays up
-const TIP_EVERY_TICKS = 24; // a new tip every 3 beats (32nd-note ticks)
+const TIP_EVERY_TICKS = 16; // a new tip every 2 beats (32nd-note ticks)
 // Tips pop in with a size overshoot (ease-out-back) while opacity rises linearly, and shrink
 // away the same way in reverse.
 const POP_IN_MS = 450;
@@ -10,7 +10,7 @@ const POP_OUT_MS = 300;
 const EASE_OUT_BACK = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 const EASE_IN_BACK = 'cubic-bezier(0.36, 0, 0.66, -0.56)';
 
-// Pop-up tips over a set of highways. Every 3 beats, the next highway in turn pops one tip from
+// Pop-up tips over a set of highways. Every 2 beats, the next highway in turn pops one tip from
 // its list for the current track, so tips appear one at a time across the highways. Each
 // tip is shown only once per page load; a highway with none left skips its turn.
 // sectors: [{ wrap: element to place tips in, color, tipsFor(trackIndex) -> string[] }]

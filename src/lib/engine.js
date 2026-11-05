@@ -1,12 +1,12 @@
 import * as Tone from 'tone';
 import { TICKS_PER_BAR, barsOf, buildHitSets, lanesOf } from './patterns.js';
-import { voices } from './voices.js';
+import { voices, metronome } from './voices.js';
 
 // Tone's Transport is the clock for the visuals; pages can optionally give lanes a sound.
 // Bar 0 is a one-bar count-in (no notes); the pattern starts at bar 1.
 export const COUNT_IN_BARS = 1;
 
-// With sound on, draw this far ahead of the audio clock to cover display lag (rAF +
+// Draw this far ahead of the audio clock to cover display lag (rAF +
 // compositor + projector) so dots land when the hit is heard. Calibrated earlier by ear.
 const VISUAL_LEAD_MS = 70;
 
@@ -28,6 +28,7 @@ export function createEngine({ tracks, onTrackChange, sounds = {}, breakBars = 0
     breakStart: Infinity, // first empty bar before the queued track (= switchBar with no break)
     phraseStart: COUNT_IN_BARS, // bar where the current track's phrase loop began
     playing: false,
+    metronome: true, // tick on every beat, count-in and breaks included
   };
 
   // One voice per sound name, shared by lanes and tracks that use it.
@@ -35,9 +36,12 @@ export function createEngine({ tracks, onTrackChange, sounds = {}, breakBars = 0
   const names = trackSounds.some((s) => typeof s === 'function')
     ? Object.keys(voices) // can't tell which a function picks, so have them all ready
     : [...new Set([...Object.values(sounds), ...trackSounds])];
-  const voiceFor = Object.fromEntries(names.map((name) => [name, voices[name]()]));
+  // Drums and metronome play through separate outputs so each can be turned off on its own.
+  const drumsOut = new Tone.Volume().toDestination();
+  drumsOut.mute = true; // pages start with the drums off; D turns them on
+  const voiceFor = Object.fromEntries(names.map((name) => [name, voices[name](drumsOut)]));
   const hasSound = names.length > 0;
-  Tone.getDestination().mute = true; // pages start silent; M turns sound on
+  const click = metronome(new Tone.Volume().toDestination());
 
   // Which track governs a given bar (null during count-in and breaks).
   function trackForBar(bar) {
@@ -76,7 +80,8 @@ export function createEngine({ tracks, onTrackChange, sounds = {}, breakBars = 0
     const bar = Math.floor(tick / TICKS_PER_BAR);
     const pos = tick % TICKS_PER_BAR;
     if (pos === 0 && state.queued !== null && bar >= state.switchBar) draw.schedule(commitQueued, time);
-    if (!hasSound) return;
+    if (state.metronome && pos % 8 === 0) click(time, pos === 0);
+    if (!hasSound || drumsOut.mute) return;
     const t = trackForBar(bar);
     if (t === null) return;
     const barHits = hitSets[t][phraseBarAt(bar)];
@@ -87,13 +92,11 @@ export function createEngine({ tracks, onTrackChange, sounds = {}, breakBars = 0
     }
   }, '32n', 0);
 
-  // Current position in 32nd-note ticks (aligned to what's heard when there's sound).
+  // Current position in 32nd-note ticks, aligned to what's heard (the metronome or drums).
   function nowTicks() {
     if (transport.state !== 'started') return 0;
     const ctx = Tone.getContext();
-    const t = hasSound
-      ? ctx.immediate() - (ctx.rawContext.outputLatency || 0) + VISUAL_LEAD_MS / 1000
-      : ctx.immediate();
+    const t = ctx.immediate() - (ctx.rawContext.outputLatency || 0) + VISUAL_LEAD_MS / 1000;
     return transport.getTicksAtTime(Math.max(0, t)) / ppq32;
   }
 
@@ -148,10 +151,12 @@ export function createEngine({ tracks, onTrackChange, sounds = {}, breakBars = 0
       if (state.queued !== null) commitQueued();
       state.phraseStart = COUNT_IN_BARS;
     },
-    // Silences (or restores) all sound; the transport and visuals keep running.
-    toggleMute() {
-      const out = Tone.getDestination();
-      out.mute = !out.mute;
+    toggleMetronome() {
+      state.metronome = !state.metronome;
+    },
+    // Turns the drum sounds off or on; the metronome, transport and visuals keep running.
+    toggleDrums() {
+      drumsOut.mute = !drumsOut.mute;
     },
     bpm: () => transport.bpm.value,
     setBpm(bpm) {

@@ -18,8 +18,8 @@ const beats = {
     moving: [16],
   },
   2040: {
-    // Beats 1 & 3: first and fourth sixteenths; beats 2 & 4: the "and".
-    making: [0, 6, 12, 16, 22, 28],
+    // "One-and-two, three-and-four": beats 1 and 3 with their "and", then beats 2 and 4.
+    making: [0, 4, 8, 16, 20, 24],
     // Every quarter note.
     food: range(0, 32, 8),
     // Beat 1, then all four sixteenths of beat 4.
@@ -27,8 +27,8 @@ const beats = {
   },
 };
 
-// The narrative: start with empty highways, bring in each sector's "now" beat one at a
-// time, then swap each one over to its future beat one at a time.
+// The narrative: start with empty highways, bring in all three sectors' "now" beats at once,
+// then swap each one over to its future beat one at a time.
 // stage: { lane: 'now' | '2040' } for the sectors playing in that step (others are silent).
 // tips: which list of pop-up tips each sector shows (sectors left out show none).
 const lanes = sectors.map((s) => s.lane);
@@ -47,16 +47,16 @@ const only2040 = (stage) => Object.fromEntries(Object.entries(stage).filter(([, 
 const stageOf = (nowCount, futureCount) =>
   Object.fromEntries(lanes.slice(0, nowCount).map((lane, i) => [lane, i < futureCount ? '2040' : 'now']));
 
-// Smoke starts at Movement 2's worst, thins a little as today's efforts come in (5% of it per
-// step), then a lot as each sector moves to 2040 (another 20%, 30%, then 35%, ending clear).
-const SMOKE = { now: [0.95, 0.9, 0.85], 2040: [0.65, 0.35, 0] };
+// Smoke starts at Movement 2's worst, thins a little as today's efforts come in (15% of it), then
+// a lot as each sector moves to 2040 (another 20%, 30%, then 35%, ending clear).
+const SMOKE = { now: 0.85, 2040: [0.65, 0.35, 0] };
 
 const phase1Titles = 'reductions over the last few years';
 export const tracks = [
   step('Empty', phase1Titles, 'the three highways, no beats', {}, 1),
-  ...sectors.map((s, i) => step(`Now ${i + 1}`, phase1Titles, `add ${s.label} today`, stageOf(i + 1, 0), SMOKE.now[i])),
+  step('Now', phase1Titles, 'all three sectors today', stageOf(lanes.length, 0), SMOKE.now),
   ...sectors.map((s, i) => {
     const stage = stageOf(lanes.length, i + 1);
-    return step(`Future ${i + 1}`, 'coming back down to 1.5° by 2040', `${s.label} moves to 2040`, stage, SMOKE[2040][i], only2040(stage));
+    return step(`Future ${i + 1}`, '2040 and beyond: coming back down to 1.5°', `${s.label} moves to 2040`, stage, SMOKE[2040][i], only2040(stage));
   }),
 ];

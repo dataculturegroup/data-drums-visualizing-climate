@@ -16,10 +16,6 @@ const subs = sectors.map(({ lane, reduction }) => {
   const el = document.getElementById(`sub-${lane}`);
   return { lane, el, desc: el.textContent, reduction };
 });
-// "stomp your feet" etc. stay hidden until you advance into the step that brings that sector's beat
-// in. These, the title and the subtitles follow the queued step so they change as soon as you press the arrow,
-// before its first dot reaches the target.
-const motions = sectors.map(({ lane }) => ({ lane, el: document.getElementById(`motion-${lane}`) }));
 // Smoke across the whole page, starting at Movement 2's worst (its last year) and thinning by
 // step. Off by default (it lags the browser alongside three highways); S turns it on and off.
 const worstGt = emissions.find((d) => d.year === emissionsTracks.at(-1).year).gt;
@@ -29,26 +25,26 @@ window.addEventListener('keydown', (e) => {
 });
 const engine = createEngine({ tracks, onTrackChange, sounds });
 function onTrackChange() {
+  // The title and subtitles follow the queued step so they change as soon as you press the arrow,
+  // before its first dot reaches the target.
   const pending = tracks[engine.pendingTrack()];
   title.textContent = pending.title;
   smoke.setRate(smokeRate(worstGt) * pending.smoke);
   for (const { lane, el, desc, reduction } of subs) {
     el.textContent = pending.tips[lane] === '2040' ? reduction : desc;
   }
-  for (const { lane, el } of motions) {
-    el.style.visibility = pending.hits.some((h) => h.lane === lane) ? '' : 'hidden';
-  }
 }
-// Each sector's motion pulses the instant a dot reaches the target on its highway.
-const motionEl = Object.fromEntries(motions.map(({ lane, el }) => [lane, el]));
+// Each sector's motion ("stomp your feet" etc., always shown) pulses the instant a dot reaches the
+// target on its highway.
 for (const { lane, color } of sectors) {
+  const motion = document.getElementById(`motion-${lane}`);
   createHighway(document.getElementById(`highway-${lane}`), engine, {
     lanes: [lane],
     colors: { [lane]: color },
-    onHit: () => pulse(motionEl[lane]),
+    onHit: () => pulse(motion),
   });
 }
-bindControls(engine, tracks, { bpm: 95, onPastEnd: () => location.assign('../') });
+bindControls(engine, tracks, { bpm: 105, onPastEnd: () => location.assign('../') });
 
 createTips(
   engine,

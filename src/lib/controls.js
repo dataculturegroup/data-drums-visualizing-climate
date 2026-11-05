@@ -1,10 +1,10 @@
-// Shared stage controls: Space start/stop, ←/→ tracks, ↑/↓ tempo, 1–9 jump, M mute.
+// Shared stage controls: Space start/stop, ←/→ or ↑/↓ tracks, +/− tempo, 1–9 jump, M metronome, D drums.
 const DEFAULT_BPM = 90;
 
 // Keys that step forward and back. Beyond the arrows, these cover what slide clickers send
 // (PageDown/PageUp, sometimes Enter).
-export const NEXT_KEYS = new Set(['ArrowRight', 'PageDown', 'Enter']);
-export const PREV_KEYS = new Set(['ArrowLeft', 'PageUp']);
+export const NEXT_KEYS = new Set(['ArrowRight', 'ArrowDown', 'PageDown', 'Enter']);
+export const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp']);
 const MIN_BPM = 40;
 const MAX_BPM = 160;
 
@@ -69,9 +69,10 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     else if (NEXT_KEYS.has(k) && !overlay.hidden) togglePlay(); // from the start screen into step one
     else if (NEXT_KEYS.has(k)) step(1);
     else if (PREV_KEYS.has(k)) step(-1);
-    else if (k === 'ArrowUp') setBpm(bpm + 5);
-    else if (k === 'ArrowDown') setBpm(bpm - 5);
-    else if (k === 'm' || k === 'M') engine.toggleMute();
+    else if (k === '+' || k === '=') setBpm(bpm + 5); // = is + without Shift
+    else if (k === '-' || k === '_') setBpm(bpm - 5);
+    else if (k === 'm' || k === 'M') engine.toggleMetronome();
+    else if (k === 'd' || k === 'D') engine.toggleDrums();
     else if (k >= '1' && k <= String(Math.min(9, tracks.length))) engine.setTrack(+k - 1);
     else return;
     e.preventDefault();
