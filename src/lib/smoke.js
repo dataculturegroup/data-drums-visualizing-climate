@@ -2,6 +2,7 @@
 // fading as they go. setRate(n) sets how many puffs start each second. opts.spawnWidth: the
 // fraction of the canvas width (from the left) where puffs start; they can drift beyond it.
 // toggle() turns it off (hidden, no animation, puffs cleared) or back on (puffs start fresh).
+// opts.on: false to start off.
 
 const LIFE_S = [5, 9]; // how long a puff lasts (seconds), min–max
 const RISE = [0.1, 0.22]; // upward speed, in canvas heights per second
@@ -16,7 +17,7 @@ const rand = ([a, b]) => a + Math.random() * (b - a);
 const SMOKE_POWER = 1.25;
 export const smokeRate = (gt) => gt ** SMOKE_POWER;
 
-export function createSmoke(canvas, { spawnWidth = 1 } = {}) {
+export function createSmoke(canvas, { spawnWidth = 1, on = true } = {}) {
   const ctx = canvas.getContext('2d');
   let w = 0;
   let h = 0;
@@ -91,7 +92,8 @@ export function createSmoke(canvas, { spawnWidth = 1 } = {}) {
     }
     raf = requestAnimationFrame(frame);
   }
-  raf = requestAnimationFrame(frame);
+  if (on) raf = requestAnimationFrame(frame);
+  else canvas.hidden = true;
 
   return {
     setRate(perSecond) {

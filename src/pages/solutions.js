@@ -21,9 +21,9 @@ const subs = sectors.map(({ lane, reduction }) => {
 // before its first dot reaches the target.
 const motions = sectors.map(({ lane }) => ({ lane, el: document.getElementById(`motion-${lane}`) }));
 // Smoke across the whole page, starting at Movement 2's worst (its last year) and thinning by
-// step. S turns it off and on (on by default); off stops its animation entirely.
+// step. Off by default (it lags the browser alongside three highways); S turns it on and off.
 const worstGt = emissions.find((d) => d.year === emissionsTracks.at(-1).year).gt;
-const smoke = createSmoke(document.getElementById('smoke'));
+const smoke = createSmoke(document.getElementById('smoke'), { on: false });
 window.addEventListener('keydown', (e) => {
   if (e.key === 's' || e.key === 'S') smoke.toggle();
 });
