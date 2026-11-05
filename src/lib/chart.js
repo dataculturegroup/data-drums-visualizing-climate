@@ -68,7 +68,7 @@ export function createChart(container, data, trackYears, { connectTo } = {}) {
     const label = svg.append('text')
       .attr('y', gtBase).attr('text-anchor', 'middle')
       .style('font-size', `${gtSize}px`).style('font-weight', 700).style('fill', hi)
-      .text(`${cur.gt.toFixed(1)} Gt`);
+      .text(`${cur.gt.toFixed(0)} Gt`);
     const half = label.node().getComputedTextLength() / 2;
     label.attr('x', Math.max(half, Math.min(width - half, cx)));
 
