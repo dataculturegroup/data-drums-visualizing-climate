@@ -42,6 +42,14 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
       button.setAttribute('aria-expanded', String(!help.hidden));
     });
     help.after(button);
+
+    // For working out what a clicker sends: the last key pressed, appended once there is one.
+    const lastKey = document.createElement('span');
+    help.append(lastKey);
+    window.addEventListener('keydown', (e) => {
+      const name = e.key === ' ' ? 'Space' : e.key;
+      lastKey.textContent = ` · last key: ${name}${e.code && e.code !== name ? ` (${e.code})` : ''}`;
+    }, { capture: true });
   }
 
   function step(d) {
