@@ -1,5 +1,10 @@
 // Shared stage controls: Space start/stop, ←/→ tracks, ↑/↓ tempo, 1–9 jump, M mute.
 const DEFAULT_BPM = 90;
+
+// Keys that step forward and back. Beyond the arrows, these cover what slide clickers send
+// (PageDown/PageUp, sometimes Enter).
+export const NEXT_KEYS = new Set(['ArrowRight', 'PageDown', 'Enter']);
+export const PREV_KEYS = new Set(['ArrowLeft', 'PageUp']);
 const MIN_BPM = 40;
 const MAX_BPM = 160;
 
@@ -53,9 +58,9 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     const k = e.key;
     if (e.repeat && k === ' ') return;
     if (k === ' ') togglePlay();
-    else if (k === 'ArrowRight' && !overlay.hidden) togglePlay(); // from the start screen into step one
-    else if (k === 'ArrowRight') step(1);
-    else if (k === 'ArrowLeft') step(-1);
+    else if (NEXT_KEYS.has(k) && !overlay.hidden) togglePlay(); // from the start screen into step one
+    else if (NEXT_KEYS.has(k)) step(1);
+    else if (PREV_KEYS.has(k)) step(-1);
     else if (k === 'ArrowUp') setBpm(bpm + 5);
     else if (k === 'ArrowDown') setBpm(bpm - 5);
     else if (k === 'm' || k === 'M') engine.toggleMute();
