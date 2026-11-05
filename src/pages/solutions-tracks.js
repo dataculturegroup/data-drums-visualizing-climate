@@ -3,60 +3,44 @@ import { range } from '../lib/patterns.js';
 // Three sectors, one highway each. Ticks are 32nds: beat = 8, eighth ("and") = 4, sixteenth = 2.
 export const sectors = [
   // tipsKey: section of src/data/solutions-tips.json shown as pop-up tips on this highway.
-  // reduction: replaces the subtitle under the sector's title once it moves to its 2040 beat.
-  { lane: 'food', label: 'Food and Land', color: 'green', sound: 'stomp', tipsKey: 'food_and_land', reduction: '4x reduction' },
-  { lane: 'moving', label: 'Getting Around', color: 'darkbrown', sound: 'thigh', tipsKey: 'getting_around_and_living', reduction: '5x reduction' },
-  { lane: 'making', label: 'Making Things', color: 'red', sound: 'clap', tipsKey: 'making_things', reduction: '6x reduction' },
+  { lane: 'food', label: 'Food and Land', color: 'green', sound: 'stomp', tipsKey: 'food_and_land' },
+  { lane: 'moving', label: 'Getting Around', color: 'darkbrown', sound: 'thigh', tipsKey: 'getting_around_and_living' },
+  { lane: 'making', label: 'Making Things', color: 'red', sound: 'clap', tipsKey: 'making_things' },
 ];
 
-// Each sector's beat today ('now') and in the future ('2040'); keys match the tips lists.
+// Each sector's beat at each target year.
 const beats = {
-  now: {
-    // One hit each, on beats 1, 2, 3.
-    making: [0],
-    food: [8],
-    moving: [16],
+  2030: {
+    food: [0, 8, 16], // 1, 2, 3
+    moving: [0, 24], // 4 and 1
+    making: [0, 12, 20], // 1, the "and" of 2, the "and" of 3
   },
-  2040: {
-    // "One-and-two, three-and-four": beats 1 and 3 with their "and", then beats 2 and 4.
-    making: [0, 4, 8, 16, 20, 24],
-    // Every quarter note.
-    food: range(0, 32, 8),
-    // Beat 1, then all four sixteenths of beat 4.
-    moving: [0, ...range(24, 32, 2)],
+  2035: {
+    food: [0, 8, 16, 20, 24, 28], // 1, 2, 3-and, 4-and
+    moving: range(0, 16, 2), // eight sixteenths across beats 1 and 2
+    making: [0, 6, 12, 20, 24], // 3-2 clave, squeezed into one bar like the warm up's
   },
 };
 
-// The narrative: start with empty highways, bring in all three sectors' "now" beats at once,
-// then swap each one over to its future beat one at a time.
-// stage: { lane: 'now' | '2040' } for the sectors playing in that step (others are silent).
-// tips: which list of pop-up tips each sector shows (sectors left out show none).
+// The narrative: empty highways for the last few years, then every sector at its 2030 beat, then
+// at its 2035 beat.
+// title: heading over all three highways.
+// sub: replaces every sector's subtitle (null keeps the sector's description from the page).
+// target: which beats every sector plays (null for none).
+// tips: which list of src/data/solutions-tips.json pop-up tips each sector shows (null for none).
+// smoke: how much of Movement 2's worst smoke is left, as a fraction.
 const lanes = sectors.map((s) => s.lane);
-// smoke: how much of Movement 2's worst smoke is left, as a fraction (see SMOKE below).
-const step = (label, title, desc, stage, smoke, tips = stage) => ({
+const step = ({ label, title, sub = null, target = null, tips = null, smoke }) => ({
   label,
+  title,
+  sub,
   smoke,
-  title, // subtle heading over all three highways
-  desc,
-  tips,
-  hits: Object.entries(stage).map(([lane, era]) => ({ lane, ticks: beats[era][lane] })),
+  tips: Object.fromEntries(tips ? lanes.map((lane) => [lane, tips]) : []),
+  hits: target ? lanes.map((lane) => ({ lane, ticks: beats[target][lane] })) : [],
 });
-// In the future steps only the sectors that have moved to 2040 show tips, so they're added one
-// sector at a time along with the beats.
-const only2040 = (stage) => Object.fromEntries(Object.entries(stage).filter(([, era]) => era === '2040'));
-const stageOf = (nowCount, futureCount) =>
-  Object.fromEntries(lanes.slice(0, nowCount).map((lane, i) => [lane, i < futureCount ? '2040' : 'now']));
 
-// Smoke starts at Movement 2's worst, thins a little as today's efforts come in (15% of it), then
-// a lot as each sector moves to 2040 (another 20%, 30%, then 35%, ending clear).
-const SMOKE = { now: 0.85, 2040: [0.65, 0.35, 0] };
-
-const phase1Titles = 'reductions over the last few years';
 export const tracks = [
-  step('Empty', phase1Titles, 'the three highways, no beats', {}, 1),
-  step('Now', phase1Titles, 'all three sectors today', stageOf(lanes.length, 0), SMOKE.now),
-  ...sectors.map((s, i) => {
-    const stage = stageOf(lanes.length, i + 1);
-    return step(`Future ${i + 1}`, '2040 and beyond: coming back down to 1.5°', `${s.label} moves to 2040`, stage, SMOKE[2040][i], only2040(stage));
-  }),
+  step({ label: 'Last few years', title: 'pathway to 1.5°: the last few years', smoke: 1 }),
+  step({ label: '2030', title: 'pathway to 1.5°: 2030 target', sub: '18% reduction', target: 2030, tips: 'now', smoke: 0.82 }),
+  step({ label: '2035', title: 'pathway to 1.5°: 2035 target', sub: '45% reduction', target: 2035, tips: '2040', smoke: 0.55 }),
 ];

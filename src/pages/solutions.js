@@ -11,10 +11,10 @@ import tips from '../data/solutions-tips.json';
 
 const sounds = Object.fromEntries(sectors.map((s) => [s.lane, s.sound]));
 const title = document.getElementById('solutions-title');
-// Each sector's subtitle, and the description it shows until the sector moves to 2040.
-const subs = sectors.map(({ lane, reduction }) => {
+// Each sector's subtitle, and the description it shows when a step has no sub of its own.
+const subs = sectors.map(({ lane }) => {
   const el = document.getElementById(`sub-${lane}`);
-  return { lane, el, desc: el.textContent, reduction };
+  return { el, desc: el.textContent };
 });
 // Smoke across the whole page, starting at Movement 2's worst (its last year) and thinning by
 // step. Off by default (it lags the browser alongside three highways); S turns it on and off.
@@ -30,9 +30,7 @@ function onTrackChange() {
   const pending = tracks[engine.pendingTrack()];
   title.textContent = pending.title;
   smoke.setRate(smokeRate(worstGt) * pending.smoke);
-  for (const { lane, el, desc, reduction } of subs) {
-    el.textContent = pending.tips[lane] === '2040' ? reduction : desc;
-  }
+  for (const { el, desc } of subs) el.textContent = pending.sub ?? desc;
 }
 // Each sector's motion ("stomp your feet" etc., always shown) pulses the instant a dot reaches the
 // target on its highway.
@@ -54,7 +52,7 @@ createTips(
     // Each entry is { text, ipcc_option, source }; the tip shows the text.
     tipsFor: (t) => (tips[tipsKey]?.[tracks[t].tips[lane]] ?? []).map((tip) => tip.text),
   })),
-  // Moving into the future steps clears out the "now" tips still on screen.
+  // Moving into a new step clears out the previous step's tips still on screen.
   { groupOf: (t) => tracks[t].title },
 );
 onTrackChange();
