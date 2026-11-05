@@ -1,7 +1,7 @@
 import { TICKS_PER_BAR } from './patterns.js';
 import { COUNT_IN_BARS } from './engine.js';
 
-const TIP_BARS = 1; // how long each tip stays up
+const TIP_BARS = 1.5; // how long each tip stays up (6 beats: gone just as its highway gets the next)
 const TIP_EVERY_TICKS = 16; // a new tip every 2 beats (32nd-note ticks)
 // Tips pop in with a size overshoot (ease-out-back) while opacity rises linearly, and shrink
 // away the same way in reverse.
