@@ -5,7 +5,8 @@ import { addRings } from '../lib/rings.js';
 import { bindControls } from '../lib/controls.js';
 
 const motions = document.querySelectorAll('.cue-motion');
-const engine = createEngine({ tracks, onTrackChange });
+// One empty bar between steps, so the room can reset before the next pattern.
+const engine = createEngine({ tracks, onTrackChange, breakBars: 1 });
 // Follows the queued step so the motion changes as soon as you press the arrow.
 function onTrackChange() {
   for (const el of motions) el.textContent = tracks[engine.pendingTrack()].motion;

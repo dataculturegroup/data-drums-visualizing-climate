@@ -13,7 +13,8 @@ const VISUAL_LEAD_MS = 70;
 // sounds: optional { lane: 'clap' | 'stomp' | 'thigh' }. Lanes without a sound are silent.
 // A track's optional `sound` overrides it for every lane while that track plays: a name, or
 // (pos) => name to pick by 32nd-note position within the bar.
-export function createEngine({ tracks, onTrackChange, sounds = {} }) {
+// breakBars: empty bars (no hits) played between one track and the next when switching while playing.
+export function createEngine({ tracks, onTrackChange, sounds = {}, breakBars = 0 }) {
   const hitSets = buildHitSets(tracks);
   const lanes = lanesOf(tracks);
   const transport = Tone.getTransport();
@@ -24,6 +25,7 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
     current: 0, // active track index
     queued: null, // track index waiting for the next bar line
     switchBar: Infinity, // first bar that uses the queued track
+    breakStart: Infinity, // first empty bar before the queued track (= switchBar with no break)
     phraseStart: COUNT_IN_BARS, // bar where the current track's phrase loop began
     playing: false,
   };
@@ -37,13 +39,14 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
   const hasSound = names.length > 0;
   Tone.getDestination().mute = true; // pages start silent; M turns sound on
 
-  // Which track governs a given bar (null during count-in).
+  // Which track governs a given bar (null during count-in and breaks).
   function trackForBar(bar) {
     if (bar < COUNT_IN_BARS) return null;
+    if (state.queued !== null && bar >= state.breakStart && bar < state.switchBar) return null;
     return bar >= state.switchBar && state.queued !== null ? state.queued : state.current;
   }
 
-  // Index of a bar within its track's looping phrase (null during count-in).
+  // Index of a bar within its track's looping phrase (null during count-in and breaks).
   function phraseBarAt(bar) {
     const t = trackForBar(bar);
     if (t === null) return null;
@@ -52,7 +55,7 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
     return (((bar - start) % n) + n) % n;
   }
 
-  // { lane: Set of ticks 0–31 } for a bar, or null during count-in.
+  // { lane: Set of ticks 0–31 } for a bar, or null during count-in and breaks.
   function hitsForBar(bar) {
     const t = trackForBar(bar);
     return t === null ? null : hitSets[t][phraseBarAt(bar)];
@@ -63,6 +66,7 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
     state.current = state.queued;
     state.queued = null;
     state.switchBar = Infinity;
+    state.breakStart = Infinity;
     onTrackChange(state.current);
   }
 
@@ -99,16 +103,25 @@ export function createEngine({ tracks, onTrackChange, sounds = {} }) {
       state.current = index;
       state.queued = null;
       state.switchBar = Infinity;
+      state.breakStart = Infinity;
       state.phraseStart = COUNT_IN_BARS;
       onTrackChange(index);
       return;
     }
-    // Switch at the start of the current track's next phrase loop.
+    // Already in a break: keep it, just change which track follows.
+    const bar = Math.floor(nowTicks() / TICKS_PER_BAR);
+    if (state.queued !== null && bar >= state.breakStart) {
+      state.queued = index;
+      onTrackChange(state.current);
+      return;
+    }
+    // Switch at the start of the current track's next phrase loop, after any break.
     const n = barsOf(tracks[state.current]);
-    let next = Math.max(Math.floor(nowTicks() / TICKS_PER_BAR) + 1, COUNT_IN_BARS);
+    let next = Math.max(bar + 1, COUNT_IN_BARS);
     while ((next - state.phraseStart) % n !== 0) next++;
     state.queued = index;
-    state.switchBar = next;
+    state.breakStart = next;
+    state.switchBar = next + breakBars;
     onTrackChange(state.current);
   }
 
