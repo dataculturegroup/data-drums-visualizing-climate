@@ -32,8 +32,10 @@ const beats = {
 // stage: { lane: 'now' | '2040' } for the sectors playing in that step (others are silent).
 // tips: which list of pop-up tips each sector shows (sectors left out show none).
 const lanes = sectors.map((s) => s.lane);
-const step = (label, title, desc, stage, tips = stage) => ({
+// smoke: how much of Movement 2's worst smoke is left, as a fraction (see SMOKE below).
+const step = (label, title, desc, stage, smoke, tips = stage) => ({
   label,
+  smoke,
   title, // subtle heading over all three highways
   desc,
   tips,
@@ -45,12 +47,16 @@ const only2040 = (stage) => Object.fromEntries(Object.entries(stage).filter(([, 
 const stageOf = (nowCount, futureCount) =>
   Object.fromEntries(lanes.slice(0, nowCount).map((lane, i) => [lane, i < futureCount ? '2040' : 'now']));
 
+// Smoke starts at Movement 2's worst, thins a little as today's efforts come in (5% of it per
+// step), then a lot as each sector moves to 2040 (another 20%, 30%, then 35%, ending clear).
+const SMOKE = { now: [0.95, 0.9, 0.85], 2040: [0.65, 0.35, 0] };
+
 const phase1Titles = 'reductions over the last few years';
 export const tracks = [
-  step('Empty', phase1Titles, 'the three highways, no beats', {}),
-  ...sectors.map((s, i) => step(`Now ${i + 1}`, phase1Titles, `add ${s.label} today`, stageOf(i + 1, 0))),
+  step('Empty', phase1Titles, 'the three highways, no beats', {}, 1),
+  ...sectors.map((s, i) => step(`Now ${i + 1}`, phase1Titles, `add ${s.label} today`, stageOf(i + 1, 0), SMOKE.now[i])),
   ...sectors.map((s, i) => {
     const stage = stageOf(lanes.length, i + 1);
-    return step(`Future ${i + 1}`, 'coming back down to 1.5° by 2040', `${s.label} moves to 2040`, stage, only2040(stage));
+    return step(`Future ${i + 1}`, 'coming back down to 1.5° by 2040', `${s.label} moves to 2040`, stage, SMOKE[2040][i], only2040(stage));
   }),
 ];

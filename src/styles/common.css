@@ -172,6 +172,10 @@ a { color: inherit; }
 .chart svg { overflow: visible; } /* the chart's connector runs up out of the chart */
 .panel .history::before { --c: var(--color-green); right: calc(100% + 0.5cqh); width: calc(2cqw - 1.5cqh); top: calc(1cqh + 0.65em); }
 .chart svg { display: block; }
+/* Smoke (Movements 2 and 3): over everything, under the start screen. In Movement 2 it rises from
+   the chart side (columns 1–6) but covers the whole stage so drifting puffs aren't cut off. */
+.stage > .smoke[hidden] { display: none; }
+.stage > .smoke { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
 .chart text { fill: currentColor; font-size: 2cqh; font-family: var(--font); }
 
 /* Key hints pinned small and faint to the bottom-right corner, left of the (?) button that
