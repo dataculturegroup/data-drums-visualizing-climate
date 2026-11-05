@@ -13,7 +13,6 @@
       { "text": "Make green steel standard", "scale": "collective", "strategy": "cut_residual_co2", "ipcc_option": "Fuel switching (hydrogen steel)", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
       { "text": "Build with clean concrete", "scale": "collective", "strategy": "cut_residual_co2", "ipcc_option": "Cementitious material substitution (public procurement)", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
       { "text": "Electrify all factories", "scale": "collective", "strategy": "cut_residual_co2", "ipcc_option": "Fuel switching (electrification)", "source": "IPCC SPM.7 + Reisinger et al. 2025" },
-      { "text": "Capture carbon from the air", "scale": "collective", "strategy": "carbon_removal", "ipcc_option": "Direct air capture and storage", "source": "Reisinger et al. 2025", "note": "Very costly and not yet deployed at scale" },
       { "text": "The rich go net-negative first", "scale": "collective", "strategy": "go_net_negative", "ipcc_option": "Net-negative emissions targets", "source": "Reisinger et al. 2025" },
       { "text": "Keep your phone for longer", "scale": "individual", "strategy": "cut_residual_co2", "ipcc_option": "Material efficiency (demand)", "source": "IPCC SPM.7" },
       { "text": "Re-use and repair clothes", "scale": "individual", "strategy": "cut_residual_co2", "ipcc_option": "Material efficiency (demand)", "source": "IPCC SPM.6" }
