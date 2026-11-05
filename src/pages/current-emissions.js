@@ -1,7 +1,7 @@
 import data from '../data/global-co2.json';
 import { tracks } from './current-emissions-tracks.js';
 import { createEngine } from '../lib/engine.js';
-import { createHighway } from '../lib/highway.js';
+import { createHighway, pulse } from '../lib/highway.js';
 import { createChart } from '../lib/chart.js';
 import { addRings } from '../lib/rings.js';
 import { createSmoke, smokeRate } from '../lib/smoke.js';
@@ -29,7 +29,8 @@ function onTrackChange() {
   motion.textContent = tracks[engine.pendingTrack()].motion;
 }
 
-createHighway(document.getElementById('highway'), engine, { colors: { thigh: 'red' } });
+// The motion pulses the instant a dot reaches the target, like Movement 1's.
+createHighway(document.getElementById('highway'), engine, { colors: { thigh: 'red' }, onHit: () => pulse(motion) });
 bindControls(engine, tracks, { bpm: 90, onPastEnd: () => location.assign('../solutions/') });
 onTrackChange();
 

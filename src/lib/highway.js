@@ -3,6 +3,10 @@ import { color, grey } from './theme.js';
 
 const LOOKAHEAD_BARS = 2; // how much of the future is visible below the hit line
 export const GLOW_MS = 250; // how long the target glows after a hit
+
+// Quick swell-and-settle on an element, timed like the target's glow; use from opts.onHit.
+export const pulse = (el) =>
+  el.animate([{ transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: GLOW_MS, easing: 'ease-out' });
 // Grey of the bar lines; also outlines the notes so stacked dots stay distinct.
 const LINE_RGB = '110, 110, 110';
 const BEAT_RGB = '165, 165, 165'; // lighter grey of the beat lines

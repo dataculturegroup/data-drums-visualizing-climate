@@ -1,6 +1,6 @@
 import { sectors, tracks } from './solutions-tracks.js';
 import { createEngine } from '../lib/engine.js';
-import { createHighway } from '../lib/highway.js';
+import { createHighway, pulse } from '../lib/highway.js';
 import { addRings } from '../lib/rings.js';
 import { bindControls } from '../lib/controls.js';
 import { createTips } from '../lib/tips.js';
@@ -39,8 +39,14 @@ function onTrackChange() {
     el.style.visibility = pending.hits.some((h) => h.lane === lane) ? '' : 'hidden';
   }
 }
+// Each sector's motion pulses the instant a dot reaches the target on its highway.
+const motionEl = Object.fromEntries(motions.map(({ lane, el }) => [lane, el]));
 for (const { lane, color } of sectors) {
-  createHighway(document.getElementById(`highway-${lane}`), engine, { lanes: [lane], colors: { [lane]: color } });
+  createHighway(document.getElementById(`highway-${lane}`), engine, {
+    lanes: [lane],
+    colors: { [lane]: color },
+    onHit: () => pulse(motionEl[lane]),
+  });
 }
 bindControls(engine, tracks, { bpm: 95, onPastEnd: () => location.assign('../') });
 
