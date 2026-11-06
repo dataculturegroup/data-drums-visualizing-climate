@@ -1,4 +1,4 @@
-// Shared stage controls: Space start/stop, ←/→ or ↑/↓ tracks, +/− tempo, 1–9 jump, M metronome, D drums.
+// Shared stage controls: Space start/stop, ←/→ or ↑/↓ tracks, +/− tempo, 1–9 jump, M metronome, D drums, H help.
 const DEFAULT_BPM = 90;
 
 // Keys that step forward and back. Beyond the arrows, these cover what slide clickers send
@@ -28,8 +28,10 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
   }
   overlay.addEventListener('click', togglePlay);
 
-  // The key hints start hidden behind a small (?) button in the bottom-right corner.
+  // The key hints start hidden behind a small (?) button in the bottom-right corner; it, or H,
+  // shows and hides them.
   const help = document.querySelector('.help');
+  let toggleHelp = () => {};
   if (help) {
     help.hidden = true;
     const button = document.createElement('button');
@@ -37,10 +39,11 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     button.textContent = '?';
     button.setAttribute('aria-label', 'Show keyboard controls');
     button.setAttribute('aria-expanded', 'false');
-    button.addEventListener('click', () => {
+    toggleHelp = () => {
       help.hidden = !help.hidden;
       button.setAttribute('aria-expanded', String(!help.hidden));
-    });
+    };
+    button.addEventListener('click', toggleHelp);
     help.after(button);
 
     // For working out what a clicker sends: the last key pressed, appended once there is one.
@@ -73,6 +76,7 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     else if (k === '-' || k === '_') setBpm(bpm - 5);
     else if (k === 'm' || k === 'M') engine.toggleMetronome();
     else if (k === 'd' || k === 'D') engine.toggleDrums();
+    else if (k === 'h' || k === 'H') toggleHelp();
     else if (k >= '1' && k <= String(Math.min(9, tracks.length))) engine.setTrack(+k - 1);
     else return;
     e.preventDefault();

@@ -108,8 +108,6 @@ a { color: inherit; }
 .split > .split-side { grid-column: 7 / 10; }
 .split > .split-story { grid-column: 10 / 13; background: var(--color-lightbrown); color: var(--color-green); }
 .split > .split-main { background: var(--color-green); color: var(--color-lightbrown); }
-.panel.split-main .help { color: var(--color-lightbrown); } /* beats .panel .help */
-.panel.split-story .help { color: var(--color-green); }
 
 .panel {
   display: flex;
@@ -385,6 +383,12 @@ a { color: inherit; }
   font-size: 1.6cqh;
   white-space: nowrap;
   color: var(--faint);
+}
+/* Shown on a light brown block in black so it reads over any background. */
+.panel .help, .stage > .help {
+  padding: 0.4cqh 1cqh;
+  background: var(--color-lightbrown);
+  color: var(--color-black);
 }
 
 /* Warm up: 12-column grid, mirrored call and response.
