@@ -16,6 +16,7 @@ const EASE_IN_BACK = 'cubic-bezier(0.36, 0, 0.66, -0.56)';
 // tips skips its turn.
 // sectors: [{ wrap: element to place tips in, color, tipsFor(trackIndex) -> string[] }]
 // opts.groupOf(trackIndex): tips showing are cleared when a bar starts a different group.
+// Returns { clear() } to take down any tips showing right away.
 export function createTips(engine, sectors, { groupOf = () => null } = {}) {
   const timesShown = new Map(); // tip text -> how many times it's popped up
   const showing = new Set();
@@ -81,4 +82,5 @@ export function createTips(engine, sectors, { groupOf = () => null } = {}) {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+  return { clear };
 }

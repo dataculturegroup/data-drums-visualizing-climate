@@ -55,3 +55,5 @@ export const tracks = [
   ...sectors.map((s, i) => step(`2030: ${s.label}`, TARGETS[2030].title, stageOf(i + 1, 2030), SMOKE[2030][i])),
   ...sectors.map((s, i) => step(`2035: ${s.label}`, TARGETS[2035].title, stageOf(i + 1, 2035), SMOKE[2035][i])),
 ];
+// Finale: playback stops, the highways hide, and every sector's tips fill its column (wall: true).
+tracks.push({ ...tracks.at(-1), label: 'All the changes', hits: [], tips: {}, stop: true, wall: true });

@@ -31,6 +31,46 @@ function onTrackChange() {
   title.textContent = pending.title;
   smoke.setRate(smokeRate(worstGt) * pending.smoke);
   for (const { lane, el, desc } of subs) el.textContent = pending.subs[lane] ?? desc;
+  showWall(!!pending.wall);
+}
+
+// The finale's wall: each highway and motion label hides and all of its sector's tips (every bucket)
+// fill its column, spread top to bottom and free to overlap, popping in one after another. Hiding
+// the motion labels (display: none) lets the column, and the wall with it, move up.
+const WALL_STAGGER_MS = 90;
+let tipsUi = null;
+let walls = [];
+function showWall(on) {
+  if (on === walls.length > 0) return;
+  for (const wall of walls) wall.remove();
+  walls = [];
+  for (const { lane } of sectors) {
+    document.getElementById(`highway-${lane}`).style.visibility = on ? 'hidden' : '';
+    document.getElementById(`motion-${lane}`).style.display = on ? 'none' : '';
+  }
+  if (!on) return;
+  tipsUi?.clear();
+  sectors.forEach(({ lane, color, tipsKey }, si) => {
+    const wall = document.createElement('div');
+    wall.className = 'tip-wall';
+    const texts = Object.values(tips[tipsKey]).flat().map((tip) => tip.text);
+    texts.forEach((text, i) => {
+      const tip = document.createElement('div');
+      tip.className = 'tip';
+      tip.style.setProperty('--tip-color', `var(--color-${color})`);
+      tip.style.top = `${3 + (i * 82) / Math.max(1, texts.length - 1)}%`;
+      // Alternate left and right of center (with a little scatter) so neighbors overlap less.
+      tip.style.left = `${50 + (i % 2 ? 1 : -1) * 14 + (Math.random() - 0.5) * 8}%`;
+      tip.textContent = text;
+      wall.append(tip);
+      const delay = (si * texts.length + i) * WALL_STAGGER_MS / 3;
+      tip.animate([{ scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1 }], {
+        duration: 450, delay, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', fill: 'backwards',
+      });
+    });
+    document.getElementById(`highway-${lane}`).parentElement.append(wall);
+    walls.push(wall);
+  });
 }
 // Each sector's motion ("stomp your feet" etc., always shown) pulses the instant a dot reaches the
 // target on its highway.
@@ -44,7 +84,7 @@ for (const { lane, color } of sectors) {
 }
 bindControls(engine, tracks, { bpm: 105, onPastEnd: () => location.assign('../') });
 
-createTips(
+tipsUi = createTips(
   engine,
   sectors.map(({ lane, color, tipsKey }) => ({
     wrap: document.getElementById(`highway-${lane}`).parentElement,
