@@ -18,13 +18,15 @@ const callAndResponse = (label, desc, ticks, motion = 'clap your hands', sound =
 });
 
 export const tracks = [
-  callAndResponse('Step 1', 'four quarter notes', [0, 8, 16, 24]),
+  // Warm-up opener: ME stays silent and YOU play a single hit on beat 1 of your bar.
+  { ...callAndResponse('Step 1', 'YOU: one hit on beat 1', []), hits: [{ lane: 'me', ticks: [] }, { lane: 'you', ticks: [TICKS_PER_BAR] }] },
+  callAndResponse('Step 2', 'four quarter notes', [0, 8, 16, 24]),
   // Same beat, stomping beats 1 and 2 and clapping 3 and 4.
-  callAndResponse('Step 2', 'four quarter notes', [0, 8, 16, 24],
+  callAndResponse('Step 3', 'four quarter notes', [0, 8, 16, 24],
     'stomp your feet &\nclap your hands', (pos) => (pos < 16 ? 'stomp' : 'clap')),
-  callAndResponse('Step 3', 'quarter, quarter, eighth, eighth, eighth', [0, 8, 16, 20, 24]),
-  callAndResponse('Step 4', '3-2 clave', [0, 6, 12, 20, 24]),
+  callAndResponse('Step 4', 'quarter, quarter, eighth, eighth, eighth', [0, 8, 16, 20, 24]),
+  callAndResponse('Step 5', '3-2 clave', [0, 6, 12, 20, 24]),
   // Tap the sixteenths on beat 1 and the beat 2 quarter, clap beats 3 and 4.
-  callAndResponse('Step 5', 'one beat of sixteenths, then three quarters', [0, 2, 4, 6, 8, 16, 24],
+  callAndResponse('Step 6', 'one beat of sixteenths, then three quarters', [0, 2, 4, 6, 8, 16, 24],
     'tap your legs &\nclap your hands', (pos) => (pos <= 8 ? 'thigh' : 'clap')),
 ];
