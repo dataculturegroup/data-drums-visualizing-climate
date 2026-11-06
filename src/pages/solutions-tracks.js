@@ -27,7 +27,7 @@ const beats = {
 // title: heading over all three highways.
 // sub: replaces every sector's subtitle (null keeps the sector's description from the page).
 // target: which beats every sector plays (null for none).
-// tips: which list of src/data/solutions-tips.json pop-up tips each sector shows (null for none).
+// tips: which bucket of src/data/solutions-tips.json pop-up tips each sector shows (null for none).
 // smoke: how much of Movement 2's worst smoke is left, as a fraction.
 const lanes = sectors.map((s) => s.lane);
 const step = ({ label, title, sub = null, target = null, tips = null, smoke }) => ({
@@ -40,7 +40,7 @@ const step = ({ label, title, sub = null, target = null, tips = null, smoke }) =
 });
 
 export const tracks = [
-  step({ label: 'Last few years', title: 'pathway to 1.5°: the last few years', smoke: 1 }),
-  step({ label: '2030', title: 'pathway to 1.5°: 2030 target', sub: '18% reduction', target: 2030, tips: 'now', smoke: 0.82 }),
-  step({ label: '2035', title: 'pathway to 1.5°: 2035 target', sub: '45% reduction', target: 2035, tips: '2040', smoke: 0.55 }),
+  step({ label: 'Last few years', title: 'back to 1.5° or less: the last few years', tips: 'now', smoke: 1 }),
+  step({ label: '2030', title: 'back to 1.5° or less: the next 5 years', sub: '18% reduction', target: 2030, tips: 'next_5', smoke: 0.82 }),
+  step({ label: '2035', title: 'back to 1.5° or less: the next 10 years', sub: '45% reduction', target: 2035, tips: 'next_10', smoke: 0.55 }),
 ];
