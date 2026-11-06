@@ -11,10 +11,10 @@ import tips from '../data/solutions-tips.json';
 
 const sounds = Object.fromEntries(sectors.map((s) => [s.lane, s.sound]));
 const title = document.getElementById('solutions-title');
-// Each sector's subtitle, and the description it shows when a step has no sub of its own.
+// Each sector's subtitle, and the description it shows until the sector reaches a target.
 const subs = sectors.map(({ lane }) => {
   const el = document.getElementById(`sub-${lane}`);
-  return { el, desc: el.textContent };
+  return { lane, el, desc: el.textContent };
 });
 // Smoke across the whole page, starting at Movement 2's worst (its last year) and thinning by
 // step. Off by default (it lags the browser alongside three highways); S turns it on and off.
@@ -30,7 +30,7 @@ function onTrackChange() {
   const pending = tracks[engine.pendingTrack()];
   title.textContent = pending.title;
   smoke.setRate(smokeRate(worstGt) * pending.smoke);
-  for (const { el, desc } of subs) el.textContent = pending.sub ?? desc;
+  for (const { lane, el, desc } of subs) el.textContent = pending.subs[lane] ?? desc;
 }
 // Each sector's motion ("stomp your feet" etc., always shown) pulses the instant a dot reaches the
 // target on its highway.

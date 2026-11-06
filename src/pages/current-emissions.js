@@ -18,7 +18,8 @@ const smoke = createSmoke(document.getElementById('smoke'), { spawnWidth: 0.5 })
 window.addEventListener('keydown', (e) => {
   if (e.key === 's' || e.key === 'S') smoke.toggle();
 });
-const engine = createEngine({ tracks, onTrackChange });
+// One empty bar at the start of each step, so the room can get ready for the new pattern.
+const engine = createEngine({ tracks, onTrackChange, breakBars: 1 });
 function onTrackChange() {
   const { year, history: text } = tracks[engine.state.current];
   highwayYear.textContent = year;

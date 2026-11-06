@@ -22,25 +22,36 @@ const beats = {
   },
 };
 
-// The narrative: empty highways for the last few years, then every sector at its 2030 beat, then
-// at its 2035 beat.
-// title: heading over all three highways.
-// sub: replaces every sector's subtitle (null keeps the sector's description from the page).
-// target: which beats every sector plays (null for none).
-// tips: which bucket of src/data/solutions-tips.json pop-up tips each sector shows (null for none).
+// The narrative: empty highways for the last few years, then bring each sector in at its 2030
+// beat one at a time, then clear the highways again and bring each one back at its 2035 beat one
+// at a time.
+// stage: { lane: 2030 | 2035 } for the sectors playing in that step (others are silent).
+// Each playing sector's subtitle shows its target's reduction and its pop-up tips come from its
+// target's bucket of src/data/solutions-tips.json; silent sectors keep their description and show
+// no tips, except in the opening step where every sector shows the "now" tips.
 // smoke: how much of Movement 2's worst smoke is left, as a fraction.
 const lanes = sectors.map((s) => s.lane);
-const step = ({ label, title, sub = null, target = null, tips = null, smoke }) => ({
+const TARGETS = {
+  2030: { title: 'back to 1.5° or less: the next 5 years', sub: '18% reduction', tips: 'next_5' },
+  2035: { title: 'back to 1.5° or less: the next 10 years', sub: '45% reduction', tips: 'next_10' },
+};
+const step = (label, title, stage, smoke, tips) => ({
   label,
   title,
-  sub,
   smoke,
-  tips: Object.fromEntries(tips ? lanes.map((lane) => [lane, tips]) : []),
-  hits: target ? lanes.map((lane) => ({ lane, ticks: beats[target][lane] })) : [],
+  subs: Object.fromEntries(Object.entries(stage).map(([lane, target]) => [lane, TARGETS[target].sub])),
+  tips: tips ?? Object.fromEntries(Object.entries(stage).map(([lane, target]) => [lane, TARGETS[target].tips])),
+  hits: Object.entries(stage).map(([lane, target]) => ({ lane, ticks: beats[target][lane] })),
 });
+// The first n sectors at `target`; the others are silent.
+const stageOf = (n, target) => Object.fromEntries(lanes.slice(0, n).map((lane) => [lane, target]));
+
+// Smoke thins as each sector reaches its target: 18% gone once all three hit 2030, 45% by 2035.
+const SMOKE = { 2030: [0.94, 0.88, 0.82], 2035: [0.73, 0.64, 0.55] };
 
 export const tracks = [
-  step({ label: 'Last few years', title: 'back to 1.5° or less: the last few years', tips: 'now', smoke: 1 }),
-  step({ label: '2030', title: 'back to 1.5° or less: the next 5 years', sub: '18% reduction', target: 2030, tips: 'next_5', smoke: 0.82 }),
-  step({ label: '2035', title: 'back to 1.5° or less: the next 10 years', sub: '45% reduction', target: 2035, tips: 'next_10', smoke: 0.55 }),
+  step('Last few years', 'back to 1.5° or less: the last few years', {}, 1,
+    Object.fromEntries(lanes.map((lane) => [lane, 'now']))),
+  ...sectors.map((s, i) => step(`2030: ${s.label}`, TARGETS[2030].title, stageOf(i + 1, 2030), SMOKE[2030][i])),
+  ...sectors.map((s, i) => step(`2035: ${s.label}`, TARGETS[2035].title, stageOf(i + 1, 2035), SMOKE[2035][i])),
 ];

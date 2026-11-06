@@ -9,6 +9,7 @@ const MIN_BPM = 40;
 const MAX_BPM = 160;
 
 // opts.onPastEnd: called when → is pressed on the last track (e.g. leave the page).
+// A track with stop: true stops playback as soon as you move to it.
 // opts.bpm: starting tempo for this page.
 export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAULT_BPM } = {}) {
   const $ = (id) => document.getElementById(id);
@@ -55,6 +56,11 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     }, { capture: true });
   }
 
+  function goTo(index) {
+    if (tracks[index].stop && engine.state.playing) engine.stop();
+    engine.setTrack(index);
+  }
+
   function step(d) {
     const next = engine.pendingTrack() + d;
     if (next >= tracks.length && onPastEnd) {
@@ -62,7 +68,7 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
       onPastEnd();
       return;
     }
-    engine.setTrack(Math.max(0, Math.min(tracks.length - 1, next)));
+    goTo(Math.max(0, Math.min(tracks.length - 1, next)));
   }
 
   window.addEventListener('keydown', (e) => {
@@ -77,7 +83,7 @@ export function bindControls(engine, tracks, { onPastEnd, bpm: startBpm = DEFAUL
     else if (k === 'm' || k === 'M') engine.toggleMetronome();
     else if (k === 'd' || k === 'D') engine.toggleDrums();
     else if (k === 'h' || k === 'H') toggleHelp();
-    else if (k >= '1' && k <= String(Math.min(9, tracks.length))) engine.setTrack(+k - 1);
+    else if (k >= '1' && k <= String(Math.min(9, tracks.length))) goTo(+k - 1);
     else return;
     e.preventDefault();
   }, { capture: true });

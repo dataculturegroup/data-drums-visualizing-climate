@@ -1,8 +1,8 @@
 import { TICKS_PER_BAR } from './patterns.js';
 import { COUNT_IN_BARS } from './engine.js';
 
-const TIP_BARS = 1.5; // how long each tip stays up (6 beats: gone just as its highway gets the next)
-const TIP_EVERY_TICKS = 16; // a new tip every 2 beats (32nd-note ticks)
+const TIP_BARS = 1.5; // how long each tip stays up (6 beats; each highway gets a new one every 9)
+const TIP_EVERY_TICKS = 24; // a new tip every 3 beats (32nd-note ticks)
 // Tips pop in with a size overshoot (ease-out-back) while opacity rises linearly, and shrink
 // away the same way in reverse.
 const POP_IN_MS = 450;
@@ -10,13 +10,14 @@ const POP_OUT_MS = 300;
 const EASE_OUT_BACK = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 const EASE_IN_BACK = 'cubic-bezier(0.36, 0, 0.66, -0.56)';
 
-// Pop-up tips over a set of highways. Every 2 beats, the next highway in turn pops one tip from
-// its list for the current track, so tips appear one at a time across the highways. Each
-// tip is shown only once per page load; a highway with none left skips its turn.
+// Pop-up tips over a set of highways. Every 3 beats, the next highway in turn pops one tip from
+// its list for the current track, so tips appear one at a time across the highways. Each highway
+// cycles through its list, showing whichever tip has come up least so far; a highway with no
+// tips skips its turn.
 // sectors: [{ wrap: element to place tips in, color, tipsFor(trackIndex) -> string[] }]
 // opts.groupOf(trackIndex): tips showing are cleared when a bar starts a different group.
 export function createTips(engine, sectors, { groupOf = () => null } = {}) {
-  const used = new Set(); // tip texts already shown
+  const timesShown = new Map(); // tip text -> how many times it's popped up
   const showing = new Set();
   let lastSlot = -1;
   let lastGroup;
@@ -70,9 +71,10 @@ export function createTips(engine, sectors, { groupOf = () => null } = {}) {
       const t = engine.trackForBar(bar);
       if (groupOf(t) !== lastGroup) clear();
       lastGroup = groupOf(t);
-      const text = sectors[si].tipsFor(t).find((s) => !used.has(s));
-      if (text) {
-        used.add(text);
+      const count = (s) => timesShown.get(s) ?? 0;
+      const text = sectors[si].tipsFor(t).reduce((a, s) => (a === undefined || count(s) < count(a) ? s : a), undefined);
+      if (text !== undefined) {
+        timesShown.set(text, count(text) + 1);
         show(sectors[si], text);
       }
     }
